@@ -2,12 +2,10 @@ import type { ComplexStyleRule } from '@vanilla-extract/css';
 
 type Prettify<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
-type RecipeStyleRule = ComplexStyleRule | string;
+export type RecipeStyleRule = ComplexStyleRule | string;
 
 // { isResponsive: { true: StyleRule, false: StyleRule } }
-export type VariantGroup =
-  | Record<string | number, Record<string | number, RecipeStyleRule>>
-  | undefined;
+export type VariantGroup = Record<string, Record<string | number, RecipeStyleRule>> | undefined;
 
 type ConditionKey = '@media' | '@supports' | '@container' | 'selector';
 
@@ -24,132 +22,74 @@ type CombineVariants<V, RV> = Prettify<CreateVariants<V> & CreateVariants<RV>>;
 type DefaultVariants<V, RV> = keyof RV | keyof V extends never ? never : CombineVariants<V, RV>;
 
 export type Args<
-  Variants extends VariantGroup = VariantGroup,
-  ResponsiveVariants extends VariantGroup = VariantGroup,
-  C extends Conditions = Conditions
+  Variants extends VariantGroup,
+  ResponsiveVariants extends VariantGroup,
+  C extends Conditions | undefined
 > = {
   base?: RecipeStyleRule;
   variants?: Variants;
   responsiveVariants?: ResponsiveVariants;
   conditions?: C;
   defaultVariants?: DefaultVariants<Variants, ResponsiveVariants>;
-  // TODO: Dont allow if no variants are provided
   compoundVariants?: {
-    variants: CombineVariants<Variants, ResponsiveVariants>;
+    variants: keyof Variants | keyof ResponsiveVariants extends never
+      ? never
+      : CombineVariants<Variants, ResponsiveVariants>;
     style: RecipeStyleRule;
   }[];
 };
 
 type BooleanMap<T> = T extends 'true' | 'false' ? boolean : T;
 
-type CreateVariants<Variants> = { -readonly [K in keyof Variants]?: BooleanMap<keyof Variants[K]> };
-
-type CreateResponsiveVariants<ResponsiveVariants, Conditions> = keyof Conditions extends never
+type CreateVariants<Variants> = keyof Variants extends never
   ? {}
-  : {
-      -readonly [K in keyof ResponsiveVariants]?:
-        | BooleanMap<keyof ResponsiveVariants[K]>
-        | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
-    };
+  : { -readonly [K in keyof Variants]?: BooleanMap<keyof Variants[K]> };
 
-export type RecipeOptions<
+type CreateResponsiveVariants<ResponsiveVariants, Conditions> =
+  keyof ResponsiveVariants extends never
+    ? {}
+    : {
+        -readonly [K in keyof ResponsiveVariants]?:
+          | BooleanMap<keyof ResponsiveVariants[K]>
+          | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
+      };
+
+export type RuntimeRecipeOptions<
   V extends VariantGroup,
   RV extends VariantGroup,
-  D extends Conditions,
-  C extends Conditions
-> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, Omit<D, keyof C> & C>>;
+  DefaultConditions extends Conditions,
+  C extends Conditions | undefined
+> = Prettify<
+  CreateVariants<V> & CreateResponsiveVariants<RV, keyof C extends never ? DefaultConditions : C>
+>;
 
-export type BuildResult<Variants extends VariantGroup, ResponsiveVariants extends VariantGroup> = {
-  defaultClassName: string;
-  variantClassNames: { [variantGroup: string]: { [variantOption: string]: string } };
+export type BuildResult = {
+  baseClassName: string;
+  // variantClassNames: {
+  //   [VariantGroup in keyof V]: { [VariantOption in keyof V[VariantGroup]]: string };
+  // };
+  // responsiveVariantClassNames: {
+  //   [VariantGroup in keyof RV]: {
+  //     [VariantOption in keyof RV[VariantGroup]]: { [Condition in keyof C]: string };
+  //   };
+  // };
+  variantClassNames: {
+    [variantGroup: string]: { [variantOption: string]: { [initialBreakpoint: string]: string } };
+  };
   responsiveVariantClassNames: {
     [variantGroup: string]: { [variantOption: string]: { [breakpoint: string]: string } };
   };
   // The className is the custom `style` property of the compoundVariant
-  compoundVariants: [Record<string, string | boolean>, string][];
+  compoundVariants: [{ [variantGroup: string]: string }, { [conditionName: string]: string }][];
+  conditions: Conditions;
+  initialCondition: string;
+  defaultVariants: Record<string | number, string | number | boolean>;
 };
 
+export type RuntimeVariantGroup =
+  | string
+  | number
+  | boolean
+  | Record<string, string | number | boolean>;
+
 export type GetVariants<T extends (...args: any) => any> = Parameters<T>[0];
-
-// function createRecipe<const D>(defaultConditions: {
-//   defaultConditions?: D;
-//   initialCondition: keyof D;
-// }) {
-//   return <const V extends VariantGroup, const RV extends VariantGroup, const C extends Conditions>(
-//     args: Args<V, RV, C>
-//   ) => {
-//     return (options: RecipeOptions<V, RV, D, C>) => {
-//       // Hier wat logica..
-//       return '';
-//     };
-//   };
-// }
-
-// const recipe = createRecipe({
-//   defaultConditions: { initial: '@media', sm: '@media blabla', xl: '@media blabla' },
-//   initialCondition: 'initial',
-// });
-
-// const stack = recipe({
-//   conditions: {
-//     // They currently get merged, but maybe we should override to give complete control?
-//     sm: { '@media': 'bla' },
-//     xl: { '@media': 'bla' },
-//     mega: { '@media': 'bla' },
-//   },
-//   variants: {
-//     size: {
-//       large: {
-//         flexDirection: 'row',
-//       },
-//       small: {},
-//     },
-//   },
-//   responsiveVariants: {
-//     isResponsive: {
-//       false: {},
-//       true: {},
-//     },
-//     direction: {
-//       row: {
-//         flex: 'auto',
-//       },
-//       column: {},
-//     },
-//     spacing: {
-//       0: { margin: '0px' },
-//       1: { margin: '4px' },
-//       2: { margin: '8px' },
-//       3: { margin: '12px' },
-//       4: { margin: '16px' },
-//       5: { margin: '20px' },
-//     },
-//   },
-//   defaultVariants: {
-//     // toet: "bla",
-//     direction: 'row',
-//     size: 'large',
-//   },
-//   compoundVariants: [
-//     {
-//       variants: {
-//         spacing: 1,
-//         direction: 'row',
-//       },
-//       style: {
-//         flexDirection: 'row',
-//       },
-//     },
-//     {
-//       variants: {
-//         spacing: 2,
-//         direction: 'row',
-//       },
-//       style: {
-//         gridColumn: 5,
-//       },
-//     },
-//   ],
-// });
-
-// const result = stack({ isResponsive: { initial: true, mega: false } });
