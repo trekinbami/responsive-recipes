@@ -6,8 +6,12 @@ import {
   VariantGroup,
 } from './types';
 
-function isPrimitive(obj: any): obj is string | number {
+function isStringOrNumber(obj: any): obj is string | number {
   return obj && (typeof obj === 'string' || typeof obj === 'number');
+}
+
+function isPrimitive(value: any): value is string | number | boolean {
+  return value !== Object(value);
 }
 
 export function createRuntimeFn<
@@ -22,19 +26,26 @@ export function createRuntimeFn<
     const {
       variantClassNames,
       compoundVariants,
-      conditions,
       baseClassName,
       initialCondition,
       responsiveVariantClassNames,
       defaultVariants,
+      conditions,
     } = buildResult;
 
-    const selection: RuntimeRecipeOptions<V, RV, D, C> = { ...defaultVariants, ...options };
-    const className = [baseClassName];
+    type Selection = RuntimeRecipeOptions<V, RV, D, C>;
+    const selection: Selection = { ...defaultVariants, ...options };
     const allVariantClassNames = { ...variantClassNames, ...responsiveVariantClassNames };
 
     /**
-     * { padding: 'compact', size: { initial: "small", md: "large" } }
+     * Base classname
+     */
+    const className = [baseClassName];
+
+    /**
+     * Regular Variants and Responsive Variants
+     *
+     * In our build function we've normalized regular variants to responsive variants based on the initialCondition so we can use the same runtime logic for both.
      */
     for (const variantGroup in selection) {
       let variantOption = selection[variantGroup] as RuntimeVariantGroup;
@@ -47,7 +58,7 @@ export function createRuntimeFn<
       if (!variantClassNameGroup) continue;
 
       // { padding: 'compact' }
-      if (isPrimitive(variantOption)) {
+      if (isStringOrNumber(variantOption)) {
         className.push(variantClassNameGroup[variantOption]?.[initialCondition] || '');
         continue;
       }
@@ -61,7 +72,11 @@ export function createRuntimeFn<
       }
     }
 
-    // Which compound variants should we apply?
+    /**
+     * Compound variants
+     * Check which compound variants should we apply?
+     */
+
     // First we filter out all compound variants that do not match the current selection
     const matchingCompoundVariants = compoundVariants.filter(([variants]) =>
       Object.keys(variants).every((variantGroup) => Object.keys(selection).includes(variantGroup))
@@ -70,51 +85,63 @@ export function createRuntimeFn<
     // Then we collect the needed classnames based on the selection
     for (const [variants, classNamesPerCondition] of matchingCompoundVariants) {
       let compoundClassNames: string[] = [];
-      let shouldApply = true;
 
-      compoundVariantLoop: for (const variantGroup in variants) {
-        const variantOption = variants[variantGroup];
-        if (!variantOption) {
-          shouldApply = false;
-          break compoundVariantLoop;
+      // We only need variantGroups that are available in the compound variant config
+      const selectionArray: [string, RuntimeVariantGroup][] = Object.entries(selection);
+      const filteredSelectionArray = selectionArray.filter(
+        ([variantGroup]) => variantGroup in variants
+      );
+
+      const normalizedSelectionArray: [
+        string,
+        { [x: string | number]: string | number | boolean }
+      ][] = filteredSelectionArray.map(([variantGroup, variantOption]) => {
+        return isPrimitive(variantOption)
+          ? [variantGroup, { [initialCondition]: variantOption }]
+          : [variantGroup, variantOption];
+      });
+
+      const orderedConditions = Object.keys(classNamesPerCondition);
+
+      // We gaan eerst alle items van de filteredSelection normaliseren, zodat elk breakpoint vertegenwoordigd is
+      const completedSelectionArray: [
+        string,
+        Record<string | number, string | number | boolean | undefined>
+      ][] = normalizedSelectionArray.map(([variantGroup, variantOption]) => {
+        let optionValue: string | number | boolean | undefined = undefined;
+        let addedVariantOptionWithConditions: Record<
+          string | number,
+          string | number | boolean | undefined
+        > = { ...variantOption };
+
+        for (const condition of orderedConditions) {
+          const conditionOptionValue = variantOption[condition];
+          optionValue = conditionOptionValue || optionValue;
+
+          addedVariantOptionWithConditions = {
+            ...addedVariantOptionWithConditions,
+            [condition]: optionValue,
+          };
         }
 
-        // Check the selection if the variantGroup with the variantOption is selected (on a certain breakpoint)
-        // If so, get the className for that variantOption and push it to the compoundClassNames array
-        selectionLoop: for (const selectedVariantGroup in selection) {
-          // If the group is not selected, we should not apply this compound variant
-          if (variantGroup !== selectedVariantGroup) {
-            shouldApply = false;
-            break selectionLoop;
-          }
+        return [variantGroup, addedVariantOptionWithConditions];
+      });
 
-          // The group is selected, so lets check if we can find a value thats equal to the variantOption
-          const selectedVariantOption = selection[selectedVariantGroup];
-          if (!selectedVariantOption) {
-            shouldApply = false;
-            break selectionLoop;
-          }
+      console.log('completedSelectionArray', completedSelectionArray);
 
-          // Normalize the lookup table, so we always have an object to choose our className from
-          const selectedVariantConditionMap =
-            isPrimitive(selectedVariantOption) || typeof selectedVariantOption === 'boolean'
-              ? { [initialCondition]: selectedVariantOption }
-              : selectedVariantOption;
+      for (const condition of orderedConditions) {
+        const shouldPush = completedSelectionArray.every(
+          ([variantGroup, selectionObj]) => selectionObj[condition] === variants[variantGroup]
+        );
 
-          // If theres a condition with a value that matches the variantOption, we can apply the compound variant
-          for (const condition in selectedVariantConditionMap) {
-            // Last steps here
-            // const selectedVariantOptionValue = selectedVariantConditionMap[condition];
-            // if (selectedVariantOptionValue === variantOption) {
-            //   compoundClassNames.push(classNamesPerCondition[condition]);
-            // }
-          }
+        const className = classNamesPerCondition[condition];
+
+        if (shouldPush && className) {
+          compoundClassNames.push(className);
         }
       }
 
-      if (shouldApply) {
-        className.push(compoundClassNames.join(' '));
-      }
+      className.push(compoundClassNames.join(' '));
     }
 
     return className.filter(Boolean).join(' ');

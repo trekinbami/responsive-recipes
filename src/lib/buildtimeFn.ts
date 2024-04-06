@@ -162,7 +162,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
     const runtimeFn = createRuntimeFn<V, RV, DefaultConditions, C>(config);
 
     return addFunctionSerializer(runtimeFn, {
-      importPath: 'src/lib/createRuntimeFn',
+      importPath: 'responsive-recipes',
       importName: 'createRuntimeFn',
       args: [config],
     });

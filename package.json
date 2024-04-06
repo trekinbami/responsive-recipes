@@ -3,10 +3,10 @@
   "license": "MIT",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup index.ts --format cjs,esm --dts",
+    "build": "tsup",
     "release": "pnpm run build && changeset publish",
     "lint": "tsc"
   },
