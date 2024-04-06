@@ -30,7 +30,6 @@ export function createRuntimeFn<
       initialCondition,
       responsiveVariantClassNames,
       defaultVariants,
-      conditions,
     } = buildResult;
 
     type Selection = RuntimeRecipeOptions<V, RV, D, C>;
@@ -77,6 +76,7 @@ export function createRuntimeFn<
      * Check which compound variants should we apply?
      */
 
+    // TODO: remove redundant code
     // First we filter out all compound variants that do not match the current selection
     const matchingCompoundVariants = compoundVariants.filter(([variants]) =>
       Object.keys(variants).every((variantGroup) => Object.keys(selection).includes(variantGroup))
@@ -84,64 +84,55 @@ export function createRuntimeFn<
 
     // Then we collect the needed classnames based on the selection
     for (const [variants, classNamesPerCondition] of matchingCompoundVariants) {
-      let compoundClassNames: string[] = [];
-
       // We only need variantGroups that are available in the compound variant config
-      const selectionArray: [string, RuntimeVariantGroup][] = Object.entries(selection);
+      const selectionArray = Object.entries<RuntimeVariantGroup>(selection);
       const filteredSelectionArray = selectionArray.filter(
         ([variantGroup]) => variantGroup in variants
       );
 
-      const normalizedSelectionArray: [
-        string,
-        { [x: string | number]: string | number | boolean }
-      ][] = filteredSelectionArray.map(([variantGroup, variantOption]) => {
-        return isPrimitive(variantOption)
-          ? [variantGroup, { [initialCondition]: variantOption }]
-          : [variantGroup, variantOption];
-      });
+      const normalizedSelectionArray = filteredSelectionArray.map(
+        ([variantGroup, variantOption]) => {
+          return isPrimitive(variantOption)
+            ? ([variantGroup, { [initialCondition]: variantOption }] as const)
+            : ([variantGroup, variantOption] as const);
+        }
+      );
 
       const orderedConditions = Object.keys(classNamesPerCondition);
 
       // We gaan eerst alle items van de filteredSelection normaliseren, zodat elk breakpoint vertegenwoordigd is
-      const completedSelectionArray: [
-        string,
-        Record<string | number, string | number | boolean | undefined>
-      ][] = normalizedSelectionArray.map(([variantGroup, variantOption]) => {
-        let optionValue: string | number | boolean | undefined = undefined;
-        let addedVariantOptionWithConditions: Record<
-          string | number,
-          string | number | boolean | undefined
-        > = { ...variantOption };
-
-        for (const condition of orderedConditions) {
-          const conditionOptionValue = variantOption[condition];
-          optionValue = conditionOptionValue || optionValue;
-
-          addedVariantOptionWithConditions = {
-            ...addedVariantOptionWithConditions,
-            [condition]: optionValue,
+      const completedSelectionArray = normalizedSelectionArray.map(
+        ([variantGroup, variantOption]) => {
+          let optionValue = undefined;
+          let addedVariantOptionWithConditions = {
+            [initialCondition]: undefined,
+            ...variantOption,
           };
-        }
 
-        return [variantGroup, addedVariantOptionWithConditions];
-      });
+          for (const condition of orderedConditions) {
+            const conditionOptionValue = variantOption[condition];
+            optionValue = conditionOptionValue || optionValue; // Set the fallback value
+            addedVariantOptionWithConditions[condition] = conditionOptionValue || optionValue;
+          }
+
+          return [variantGroup, addedVariantOptionWithConditions] as const;
+        }
+      );
 
       console.log('completedSelectionArray', completedSelectionArray);
 
+      // Whenever all variants within the compound have the same selected value on the same condition, we get the className for that condition
       for (const condition of orderedConditions) {
         const shouldPush = completedSelectionArray.every(
           ([variantGroup, selectionObj]) => selectionObj[condition] === variants[variantGroup]
         );
 
-        const className = classNamesPerCondition[condition];
+        const compoundClassName = classNamesPerCondition[condition];
 
-        if (shouldPush && className) {
-          compoundClassNames.push(className);
+        if (shouldPush && compoundClassName) {
+          className.push(compoundClassName);
         }
       }
-
-      className.push(compoundClassNames.join(' '));
     }
 
     return className.filter(Boolean).join(' ');
