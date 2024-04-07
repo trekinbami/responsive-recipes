@@ -6,11 +6,11 @@ import {
   VariantGroup,
 } from './types';
 
-function isStringOrNumber(obj: any): obj is string | number {
-  return obj && (typeof obj === 'string' || typeof obj === 'number');
+function isStringOrNumber(obj: unknown): obj is string | number {
+  return !!obj && (typeof obj === 'string' || typeof obj === 'number');
 }
 
-function isPrimitive(value: any): value is string | number | boolean {
+function isPrimitive(value: unknown): value is string | number | boolean {
   return value !== Object(value);
 }
 
@@ -75,9 +75,7 @@ export function createRuntimeFn<
      * Compound variants
      * Check which compound variants should we apply?
      */
-
-    // TODO: remove redundant code
-    // First we filter out all compound variants that do not match the current selection
+    // First we filter out all compound variants that do not match the current selection for optimalisation
     const matchingCompoundVariants = compoundVariants.filter(([variants]) =>
       Object.keys(variants).every((variantGroup) => Object.keys(selection).includes(variantGroup))
     );
@@ -100,7 +98,7 @@ export function createRuntimeFn<
 
       const orderedConditions = Object.keys(classNamesPerCondition);
 
-      // We gaan eerst alle items van de filteredSelection normaliseren, zodat elk breakpoint vertegenwoordigd is
+      // Normalize the filteredSelection, so every selected variant has a value for each condition
       const completedSelectionArray = normalizedSelectionArray.map(
         ([variantGroup, variantOption]) => {
           let optionValue = undefined;
@@ -119,9 +117,7 @@ export function createRuntimeFn<
         }
       );
 
-      console.log('completedSelectionArray', completedSelectionArray);
-
-      // Whenever all variants within the compound have the same selected value on the same condition, we get the className for that condition
+      // Whenever all variants within this compound have the same selected value on the same condition, we get the className for that condition and push it to the className array
       for (const condition of orderedConditions) {
         const shouldPush = completedSelectionArray.every(
           ([variantGroup, selectionObj]) => selectionObj[condition] === variants[variantGroup]
