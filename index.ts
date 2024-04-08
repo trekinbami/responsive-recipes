@@ -1,3 +1,4 @@
-function add(a: number, b: number): number {
-  return a + b;
-}
+export * from './src/lib/buildtimeFn';
+export * from './src/lib/createRuntimeFn';
+export * from './src/lib/types';
+export * from './src/lib/utils';
