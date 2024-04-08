@@ -4,7 +4,12 @@
     "target": "es2019",
     "module": "commonjs",
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
-    "noEmit": true
+    "noEmit": true,
+    "emitDeclarationOnly": false,
+    "incremental": true
   }
 }
