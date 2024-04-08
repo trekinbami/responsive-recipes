@@ -2,12 +2,13 @@ import { createRecipe } from '../src/lib/buildtimeFn';
 
 const recipe = createRecipe({
   defaultConditions: {
-    sm: { '@media': 'min-width iets' },
-    xl: { '@media': 'min-width iets' },
+    sm: { '@media': '(min-width: 375px)' },
+    xl: { '@media': '(min-with: 1280px)' },
   },
   initialCondition: 'sm',
 });
 
+// If you make changes, the bundled classNames will change and the tests will fail
 export const stack = recipe({
   conditions: {
     initial: { '@media': '(min-width: 0px)' },
@@ -29,6 +30,18 @@ export const stack = recipe({
         height: '400px',
       },
     },
+    spacing: {
+      compact: {},
+      normal: {},
+    },
+    isDesktop: {
+      true: {},
+      false: {},
+    },
+    amountOfCols: {
+      0: {},
+      12: {},
+    },
   },
   responsiveVariants: {
     backgroundColor: {
@@ -42,19 +55,41 @@ export const stack = recipe({
       3: { gap: '12px' },
     },
     direction: {
-      true: {
+      row: {
         flexDirection: 'row',
       },
-      false: {
-        flexDirection: 'revert',
+      column: {
+        flexDirection: 'column',
       },
+    },
+    isFullHeight: {
+      true: {},
+      false: {},
     },
   },
   defaultVariants: {
-    // size: 'large',
+    size: 'small',
     backgroundColor: 'green',
   },
   compoundVariants: [
+    {
+      variants: {
+        isDesktop: false,
+        spacing: 'compact',
+      },
+      style: {
+        flexBasis: '100px',
+      },
+    },
+    {
+      variants: {
+        spacing: 'normal',
+        amountOfCols: 0,
+      },
+      style: {
+        flexBasis: 100,
+      },
+    },
     {
       variants: {
         size: 'small',
