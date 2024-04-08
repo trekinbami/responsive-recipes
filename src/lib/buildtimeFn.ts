@@ -2,32 +2,8 @@ import { addFunctionSerializer } from '@vanilla-extract/css/functionSerializer';
 import { style } from '@vanilla-extract/css';
 import { createRuntimeFn } from './createRuntimeFn';
 
-import type { Args, BuildResult, Conditions, RecipeStyleRule, VariantGroup } from './types';
-
-// Example
-// const config1 = {
-//   variantClassNames: {
-//     variantGroup: {
-//       variantOption: {
-//         initial: 'className',
-//         xl: 'className',
-//       },
-//     },
-//   },
-//   compoundVariants: [
-//     [{ variantGroup: 'variantName', variantGroup2: 'variantName2' }, 'className'],
-//     [{ variantGroup: 'variantName', variantGroup2: 'variantName2' }, 'className'],
-//   ],
-// };
-
-// We do not allow composition with existing classNames on variants for now
-const preventComposition = (styleRule?: RecipeStyleRule) => {
-  if (!styleRule || typeof styleRule === 'string' || Array.isArray(styleRule)) {
-    throw new Error('We only allow style objects inside of variants');
-  }
-
-  return styleRule;
-};
+import type { Args, BuildResult, Conditions, VariantGroup } from './types';
+import { preventComposition } from './utils';
 
 export function createRecipe<const DefaultConditions extends Conditions>({
   defaultConditions,

@@ -5,14 +5,7 @@ import {
   RuntimeVariantGroup,
   VariantGroup,
 } from './types';
-
-function isStringOrNumber(obj: unknown): obj is string | number {
-  return !!obj && (typeof obj === 'string' || typeof obj === 'number');
-}
-
-function isPrimitive(value: unknown): value is string | number | boolean {
-  return value !== Object(value);
-}
+import { isPrimitive, isStringOrNumber } from './utils';
 
 export function createRuntimeFn<
   V extends VariantGroup,
