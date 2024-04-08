@@ -8,7 +8,6 @@ const recipe = createRecipe({
   initialCondition: 'sm',
 });
 
-// If you make changes, the bundled classNames will change and the tests will fail
 export const stack = recipe({
   conditions: {
     initial: { '@media': '(min-width: 0px)' },
