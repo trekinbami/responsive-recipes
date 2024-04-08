@@ -15,11 +15,12 @@ export type Conditions = {
 
 type CombineVariants<V, RV> = Prettify<CreateVariants<V> & CreateVariants<RV>>;
 
-/**
- * If no variants are provided, we do not accept defaultVariants (never)
- * If variants are provided we try to combine the available variants
- */
 type DefaultVariants<V, RV> = keyof RV | keyof V extends never ? never : CombineVariants<V, RV>;
+
+type CompoundVariants<V, RV> = {
+  variants: keyof V | keyof RV extends never ? never : CombineVariants<V, RV>;
+  style: RecipeStyleRule;
+}[];
 
 export type Args<
   Variants extends VariantGroup,
@@ -31,13 +32,10 @@ export type Args<
   responsiveVariants?: ResponsiveVariants;
   conditions?: C;
   defaultVariants?: DefaultVariants<Variants, ResponsiveVariants>;
-  compoundVariants?: {
-    variants: keyof Variants | keyof ResponsiveVariants extends never
-      ? never
-      : CombineVariants<Variants, ResponsiveVariants>;
-    style: RecipeStyleRule;
-  }[];
-};
+  compoundVariants?: CompoundVariants<Variants, ResponsiveVariants>;
+} & (keyof C extends never
+  ? { initialCondition?: never }
+  : { initialCondition: Extract<keyof C, string> });
 
 type BooleanMap<T> = T extends 'true' | 'false' ? boolean : T;
 
@@ -65,21 +63,12 @@ export type RuntimeRecipeOptions<
 
 export type BuildResult = {
   baseClassName: string;
-  // variantClassNames: {
-  //   [VariantGroup in keyof V]: { [VariantOption in keyof V[VariantGroup]]: string };
-  // };
-  // responsiveVariantClassNames: {
-  //   [VariantGroup in keyof RV]: {
-  //     [VariantOption in keyof RV[VariantGroup]]: { [Condition in keyof C]: string };
-  //   };
-  // };
   variantClassNames: {
     [variantGroup: string]: { [variantOption: string]: { [initialBreakpoint: string]: string } };
   };
   responsiveVariantClassNames: {
     [variantGroup: string]: { [variantOption: string]: { [breakpoint: string]: string } };
   };
-  // The className is the custom `style` property of the compoundVariant
   compoundVariants: [{ [variantGroup: string]: string }, { [conditionName: string]: string }][];
   conditions: Conditions;
   initialCondition: string;

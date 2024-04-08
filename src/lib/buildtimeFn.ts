@@ -55,7 +55,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
 
     // This config will hold all the classNames that the runtimeFn will use to select
     const config: BuildResult = {
-      initialCondition: initialCondition || 'initial',
+      initialCondition: (options.initialCondition ?? initialCondition) || 'initial',
       conditions,
       responsiveVariantClassNames: {},
       variantClassNames: {},
@@ -80,7 +80,14 @@ export function createRecipe<const DefaultConditions extends Conditions>({
       // Every option should generate a className
       for (const variantOption in variantOptions) {
         const styleRule = preventComposition(variantOptions[variantOption]);
-        group[variantOption] = { [config.initialCondition]: style(styleRule, debugId) };
+        group[variantOption] = {
+          [config.initialCondition]: style(
+            styleRule,
+            debugId
+              ? `${debugId}_${variantGroup}_${variantOption}`
+              : `${variantGroup}_${variantOption}`
+          ),
+        };
       }
     }
 
@@ -133,20 +140,34 @@ export function createRecipe<const DefaultConditions extends Conditions>({
      *   { isResponsive: true, size: { initial: 'large', md: 'small' } }
      *
      * That means that the compoundVariant should kick in from the 'md' breakpoint.
-     * That's why we need to generate a className for each breakpoint for each compoundVariant style
+     * That's why we need to generate a className for each breakpoint for each compoundVariant style that contains a responsive variant
      */
-    for (const { style: theStyle, variants } of compoundVariants) {
+    for (const { style: theStyle, variants: theVariants } of compoundVariants) {
       const styleRule = preventComposition(theStyle);
       const compoundVariantClassNames = {} as Record<string, string>;
+
+      const debugName = Object.entries(theVariants)
+        .map(([key, value]) => `${key}_${value}`)
+        .join('_');
+
+      // If both variants are a regular variant, we only need to generate an initialCondition className
+      // If all variants in the compound are a regular variant, we only need to generate an initialCondition className
+      const allRegularVariants = Object.keys(theVariants).every((variantGroup) =>
+        Object.keys(variants).includes(variantGroup)
+      );
+
+      if (allRegularVariants) {
+        const className = style(styleRule, `${debugId || ''}_compound_${debugName}`);
+        compoundVariantClassNames[config.initialCondition] = className;
+        config.compoundVariants.push([theVariants, compoundVariantClassNames]);
+        continue;
+      }
 
       for (const conditionName in conditions) {
         const mediaQuery = conditions[conditionName]?.['@media'];
         if (!mediaQuery) continue;
 
         const responsiveStyleRule = { '@media': { [mediaQuery]: styleRule } };
-        const debugName = Object.entries(variants)
-          .map(([key, value]) => `${key}_${value}`)
-          .join('_');
 
         const className = style(
           responsiveStyleRule,
@@ -156,7 +177,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
         compoundVariantClassNames[conditionName] = className;
       }
 
-      config.compoundVariants.push([variants, compoundVariantClassNames]);
+      config.compoundVariants.push([theVariants, compoundVariantClassNames]);
     }
 
     const runtimeFn = createRuntimeFn<V, RV, DefaultConditions, C>(config);

@@ -15,6 +15,7 @@ export const stack = recipe({
     md: { '@media': '(min-width: 768px)' },
     lg: { '@media': '(min-width: 1024px)' },
   },
+  initialCondition: 'initial',
   base: {
     flex: '1',
     display: 'flex',
@@ -67,18 +68,14 @@ export const stack = recipe({
       false: {},
     },
   },
-  defaultVariants: {
-    size: 'small',
-    backgroundColor: 'green',
-  },
   compoundVariants: [
     {
       variants: {
-        isDesktop: false,
+        isDesktop: true,
         spacing: 'compact',
       },
       style: {
-        flexBasis: '100px',
+        padding: '20px',
       },
     },
     {
@@ -106,5 +103,77 @@ export const stack = recipe({
         border: 0,
       },
     },
+    {
+      variants: {
+        size: 'small',
+        spacing: 'compact',
+      },
+      style: {
+        flexBasis: 123,
+      },
+    },
+    {
+      variants: {
+        isDesktop: false,
+        spacing: 'compact',
+      },
+      style: {
+        padding: '100px',
+      },
+    },
+    {
+      variants: {
+        spacing: 'normal',
+        amountOfCols: 12,
+      },
+      style: { width: '1111px' },
+    },
+    {
+      variants: {
+        direction: 'row',
+        backgroundColor: 'green',
+      },
+      style: { display: 'block' },
+    },
+    {
+      variants: {
+        isFullHeight: false,
+        size: 'small',
+      },
+      style: {
+        display: 'grid',
+      },
+    },
+    {
+      variants: {
+        gap: 1,
+        spacing: 'normal',
+      },
+      style: {
+        gridTemplateColumns: 'repeat(12, 1fr)',
+      },
+    },
   ],
+});
+
+export const heading = recipe({
+  base: {
+    fontFamily: 'fantasy',
+  },
+  responsiveVariants: {
+    size: {
+      small: { fontSize: '12px' },
+      large: { fontSize: '24px' },
+    },
+  },
+  variants: {
+    color: {
+      red: { color: 'red' },
+      blue: { color: 'blue' },
+    },
+  },
+  defaultVariants: {
+    size: 'large',
+    color: 'red',
+  },
 });

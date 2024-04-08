@@ -9,7 +9,6 @@
     "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
-    "emitDeclarationOnly": false,
-    "incremental": true
+    "emitDeclarationOnly": false
   }
 }

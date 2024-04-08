@@ -21,12 +21,6 @@ export function createRuntimeFn<
   C extends Conditions | undefined
 >(buildResult: BuildResult) {
   return (options?: RuntimeRecipeOptions<V, RV, D, C>) => {
-    if (!options) {
-      return buildResult.baseClassName;
-    }
-
-    // runtimeOptions is het object wat in runtime wordt meegegeven
-    // om de classnames terug te krijgen van bepaalde variants
     const {
       variantClassNames,
       compoundVariants,
@@ -36,8 +30,7 @@ export function createRuntimeFn<
       defaultVariants,
     } = buildResult;
 
-    type Selection = RuntimeRecipeOptions<V, RV, D, C>;
-    const selection: Selection = { ...defaultVariants, ...options };
+    const selection = options ? { ...defaultVariants, ...options } : defaultVariants;
     const allVariantClassNames = { ...variantClassNames, ...responsiveVariantClassNames };
 
     /**
@@ -68,7 +61,12 @@ export function createRuntimeFn<
 
       // { size: { initial: "small", md: "large" } }
       for (const condition in variantOption) {
-        const responsiveVariantOption = variantOption[condition]?.toString();
+        let responsiveVariantOption = variantOption[condition];
+
+        if (typeof responsiveVariantOption === 'boolean') {
+          responsiveVariantOption = responsiveVariantOption === true ? 'true' : 'false';
+        }
+
         if (!responsiveVariantOption) continue;
 
         className.push(variantClassNameGroup[responsiveVariantOption]?.[condition] || '');
@@ -113,8 +111,8 @@ export function createRuntimeFn<
 
           for (const condition of orderedConditions) {
             const conditionOptionValue = variantOption[condition];
-            optionValue = conditionOptionValue || optionValue; // Set the fallback value
-            addedVariantOptionWithConditions[condition] = conditionOptionValue || optionValue;
+            optionValue = conditionOptionValue ?? optionValue; // Set the fallback value
+            addedVariantOptionWithConditions[condition] = optionValue;
           }
 
           return [variantGroup, addedVariantOptionWithConditions] as const;
@@ -122,19 +120,26 @@ export function createRuntimeFn<
       );
 
       // Whenever all variants within this compound have the same selected value on the same condition, we get the className for that condition and push it to the className array
+      let wasEqual = false;
       for (const condition of orderedConditions) {
-        const shouldPush = completedSelectionArray.every(
+        const isEqual = completedSelectionArray.every(
           ([variantGroup, selectionObj]) => selectionObj[condition] === variants[variantGroup]
         );
 
+        const shouldInclude = wasEqual;
+        wasEqual = isEqual;
+        if (shouldInclude && isEqual) {
+          continue;
+        }
+
         const compoundClassName = classNamesPerCondition[condition];
 
-        if (shouldPush && compoundClassName) {
+        if (isEqual && compoundClassName) {
           className.push(compoundClassName);
         }
       }
     }
 
-    return className.filter(Boolean).join(' ');
+    return [...new Set([...className.filter(Boolean)])].join(' ');
   };
 }
