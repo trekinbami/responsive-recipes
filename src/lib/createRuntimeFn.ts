@@ -126,6 +126,8 @@ export function createRuntimeFn<
           ([variantGroup, selectionObj]) => selectionObj[condition] === variants[variantGroup]
         );
 
+        // If a condition is equal to the previous condition, do not include it, because we assume min width media queries for now
+        // This is a bad assumption, but i've never needed anything else. We can easily omit this if needed.
         const shouldInclude = wasEqual;
         wasEqual = isEqual;
         if (shouldInclude && isEqual) {
@@ -140,6 +142,6 @@ export function createRuntimeFn<
       }
     }
 
-    return [...new Set([...className.filter(Boolean)])].join(' ');
+    return className.join(' ');
   };
 }

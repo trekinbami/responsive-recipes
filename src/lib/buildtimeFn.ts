@@ -150,7 +150,6 @@ export function createRecipe<const DefaultConditions extends Conditions>({
         .map(([key, value]) => `${key}_${value}`)
         .join('_');
 
-      // If both variants are a regular variant, we only need to generate an initialCondition className
       // If all variants in the compound are a regular variant, we only need to generate an initialCondition className
       const allRegularVariants = Object.keys(theVariants).every((variantGroup) =>
         Object.keys(variants).includes(variantGroup)
