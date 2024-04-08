@@ -1,4 +1,4 @@
-import { createRecipe } from './src/lib/buildtimeFn';
+import { createRecipe } from '../src/lib/buildtimeFn';
 
 const recipe = createRecipe({
   defaultConditions: {
