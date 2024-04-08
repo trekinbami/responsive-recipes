@@ -20,7 +20,11 @@ export function createRuntimeFn<
   D extends Conditions,
   C extends Conditions | undefined
 >(buildResult: BuildResult) {
-  return (options: RuntimeRecipeOptions<V, RV, D, C>) => {
+  return (options?: RuntimeRecipeOptions<V, RV, D, C>) => {
+    if (!options) {
+      return buildResult.baseClassName;
+    }
+
     // runtimeOptions is het object wat in runtime wordt meegegeven
     // om de classnames terug te krijgen van bepaalde variants
     const {

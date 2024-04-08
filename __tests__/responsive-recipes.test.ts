@@ -2,7 +2,7 @@ import { stack } from '../styles.css';
 
 describe('recipes', () => {
   it('should generate a class name without any config', () => {
-    expect(stack({})).toBe('styles__7pcx4y0');
+    expect(stack()).toBe('styles__7pcx4y0');
   });
 
   it('should generate a class name with a regular variant', () => {
