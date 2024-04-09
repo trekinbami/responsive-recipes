@@ -81,4 +81,4 @@ export type RuntimeVariantGroup =
   | boolean
   | Record<string, string | number | boolean>;
 
-export type GetVariants<T extends (...args: any) => any> = Parameters<T>[0];
+export type GetVariants<T extends (...args: any) => any> = NonNullable<Parameters<T>[0]>;
