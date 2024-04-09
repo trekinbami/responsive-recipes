@@ -13,7 +13,7 @@ export function createRuntimeFn<
   D extends Conditions,
   C extends Conditions | undefined
 >(buildResult: BuildResult) {
-  return (options?: RuntimeRecipeOptions<V, RV, D, C>) => {
+  const runtimeFn = (options?: RuntimeRecipeOptions<V, RV, D, C>) => {
     const {
       variantClassNames,
       compoundVariants,
@@ -137,4 +137,6 @@ export function createRuntimeFn<
 
     return className.join(' ');
   };
+
+  return runtimeFn;
 }
