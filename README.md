@@ -19,7 +19,7 @@ import { createRecipe } from 'responsive-recipes';
 
 const recipe = createRecipe({
   defaultConditions: {
-    initial: '(min-width: 0px)',
+    initial: {},
     sm: '(min-width: 380px)',
     lg: '(min-width: 1024px)',
   },
@@ -103,7 +103,7 @@ If you need to override the `defaultConditions` set in `createRecipe`, you can a
 ```ts
 const stack = recipe({
   conditions: {
-    initial: '(min-width: 0px)',
+    initial: {},
     md: '(min-width: 768px)',
     xl: '(min-width: 1280px)',
   },
