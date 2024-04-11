@@ -36,6 +36,7 @@ export function createRuntimeFn<
      *
      * In our build function we've normalized regular variants to responsive variants based on the initialCondition so we can use the same runtime logic for both.
      */
+
     for (const variantGroup in selection) {
       let variantOption = selection[variantGroup] as RuntimeVariantGroup;
 

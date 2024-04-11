@@ -71,21 +71,18 @@ export function createRecipe<const DefaultConditions extends Conditions>({
     for (const conditionName in conditions) {
       for (const variantGroup in responsiveVariants) {
         const variantOptions = responsiveVariants[variantGroup];
-
         for (const variantOption in variantOptions) {
           const styleRule = preventComposition(variantOptions[variantOption]);
 
           const mediaQuery = conditions[conditionName]?.['@media'];
-          if (!mediaQuery) continue;
+          const debugName = debugId
+            ? `${debugId}_${conditionName}_${variantGroup}_${variantOption}`
+            : `${conditionName}_${variantGroup}_${variantOption}`;
 
           // Every option has a style that needs to be wrapped in a media query
-          const responsiveStyleRule = { '@media': { [mediaQuery]: styleRule } };
-          const className = style(
-            responsiveStyleRule,
-            debugId
-              ? `${debugId}_${conditionName}_${variantGroup}_${variantOption}`
-              : `${conditionName}_${variantGroup}_${variantOption}`
-          );
+          const className = mediaQuery
+            ? style({ '@media': { [mediaQuery]: styleRule } }, debugName)
+            : style(styleRule, debugName);
 
           // Add the className to the nested config
           const group = config.responsiveVariantClassNames[variantGroup] || {};
