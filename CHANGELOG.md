@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.0.6
+
+### Patch Changes
+
+- 89aa027: Update readme for empty initial condition
+
 ## 0.0.5
 
 ### Patch Changes
