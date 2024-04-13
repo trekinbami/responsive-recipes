@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.0.7
+
+### Patch Changes
+
+- 92ad0fe: Update package.json
+
 ## 0.0.6
 
 ### Patch Changes
