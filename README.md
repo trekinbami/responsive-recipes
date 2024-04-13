@@ -1,18 +1,18 @@
 # Responsive recipes
 
-Responsive recipes is an enriched version of [recipes](https://vanilla-extract.style/documentation/packages/recipes/) by Vanilla Extract. Responsive recipes, like the name already tells, can also generate responsive variants and aims to have a great Typescript experience.
+Responsive recipes is built on top of [Vanilla Extract](https://vanilla-extract.style/documentation/getting-started/). It provides variant based styling, including responsive variants, something that was missing in packages like [Recipes](https://vanilla-extract.style/documentation/packages/recipes/) and [cva](https://cva.style/docs).
+
+This package assumes you have [Vanilla Extract](https://vanilla-extract.style/documentation/getting-started/) installed and configured.
 
 ## Installation
 
-Since it's a plugin for Vanilla Extract, it needs `@vanilla-extract/css` as well.
-
 ```
-npm i responsive-recipes @vanilla-extract/css
+npm i responsive-recipes
 ```
 
 ## Getting started
 
-We need to create some default conditions for our responsive variants. We also need an `initialCondition` as a fallback.
+To get started, create a recipe function that will have default conditions for which every responsive variant will get generated. Similar to [Sprinkles](https://vanilla-extract.style/documentation/packages/sprinkles/), it will need an `initialCondition` for calling singular string values on responsive variants.
 
 ```ts
 import { createRecipe } from 'responsive-recipes';
@@ -20,8 +20,8 @@ import { createRecipe } from 'responsive-recipes';
 const recipe = createRecipe({
   defaultConditions: {
     initial: {},
-    sm: '(min-width: 380px)',
-    lg: '(min-width: 1024px)',
+    sm: { '@media': '(min-width: 380px)' },
+    lg: { '@media': '(min-width: 1024px)' },
   },
   initialCondition: 'initial',
 });
@@ -104,8 +104,8 @@ If you need to override the `defaultConditions` set in `createRecipe`, you can a
 const stack = recipe({
   conditions: {
     initial: {},
-    md: '(min-width: 768px)',
-    xl: '(min-width: 1280px)',
+    md: { '@media': '(min-width: 768px)' },
+    xl: { '@media': '(min-width: 1280px)' },
   },
   initialCondition: 'initial',
   base: {
