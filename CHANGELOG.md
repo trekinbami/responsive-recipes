@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.0.8
+
+### Patch Changes
+
+- 752353d: Update readme to fix conditions
+
 ## 0.0.7
 
 ### Patch Changes
