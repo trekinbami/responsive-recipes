@@ -1,5 +1,11 @@
 {
   "name": "responsive-recipes",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trekinbami/responsive-recipes.git"
+  },
+  "homepage": "https://github.com/trekinbami/responsive-recipes",
+  "description": "Create responsive variant styles, powered by Vanilla Extract. Inspired by Stitches, Recipes, and CVA.",
   "license": "MIT",
   "version": "0.0.6",
   "main": "dist/index.js",
