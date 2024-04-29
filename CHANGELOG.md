@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.0.9
+
+### Patch Changes
+
+- f8815a6: Fixes building compound variant classnames with an empty condition
+
 ## 0.0.8
 
 ### Patch Changes
