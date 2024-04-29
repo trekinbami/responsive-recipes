@@ -137,9 +137,10 @@ export function createRecipe<const DefaultConditions extends Conditions>({
 
       for (const conditionName in conditions) {
         const mediaQuery = conditions[conditionName]?.['@media'];
-        if (!mediaQuery) continue;
 
-        const responsiveStyleRule = { '@media': { [mediaQuery]: styleRule } };
+        const responsiveStyleRule = mediaQuery
+          ? { '@media': { [mediaQuery]: styleRule } }
+          : styleRule;
 
         const className = style(
           responsiveStyleRule,

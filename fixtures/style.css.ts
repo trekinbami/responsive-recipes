@@ -10,7 +10,7 @@ const recipe = createRecipe({
 
 export const stack = recipe({
   conditions: {
-    initial: { '@media': '(min-width: 0px)' },
+    initial: {},
     md: { '@media': '(min-width: 768px)' },
     lg: { '@media': '(min-width: 1024px)' },
   },
