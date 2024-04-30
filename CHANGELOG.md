@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.0.10
+
+### Patch Changes
+
+- 100db1d: Support value "undefined" when getting classnames for variants in runtime by falling back to a defaultVariant when provided
+
 ## 0.0.9
 
 ### Patch Changes
