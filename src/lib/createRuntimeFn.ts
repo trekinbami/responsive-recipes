@@ -38,7 +38,12 @@ export function createRuntimeFn<
      */
 
     for (const variantGroup in selection) {
-      let variantOption = selection[variantGroup] as RuntimeVariantGroup;
+      let variantOption = selection[variantGroup] as RuntimeVariantGroup | undefined;
+
+      // If the key is provided, but the value is undefined, we should try to fall back to the default variant
+      if (variantOption === undefined) {
+        variantOption = defaultVariants[variantGroup];
+      }
 
       if (typeof variantOption === 'boolean') {
         variantOption = variantOption === true ? 'true' : 'false';
