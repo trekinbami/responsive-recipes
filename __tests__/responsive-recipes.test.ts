@@ -173,6 +173,21 @@ describe('runtime recipes', () => {
       expect(result).toBe(
         'style__1rdq1cn1n style_sm_size_large__1rdq1cn1r style_color_red__1rdq1cn1o'
       );
+
+      const result1 = heading({ color: 'blue' });
+      expect(result1).toBe(
+        'style__1rdq1cn1n style_sm_size_large__1rdq1cn1r style_color_blue__1rdq1cn1p'
+      );
+
+      const result2 = heading({ size: { sm: 'large', xl: 'small' } });
+      expect(result2).toBe(
+        'style__1rdq1cn1n style_sm_size_large__1rdq1cn1r style_xl_size_small__1rdq1cn1s style_color_red__1rdq1cn1o'
+      );
+
+      const result3 = heading({ size: { sm: 'large', xl: 'small' }, color: undefined });
+      expect(result3).toBe(
+        'style__1rdq1cn1n style_sm_size_large__1rdq1cn1r style_xl_size_small__1rdq1cn1s style_color_red__1rdq1cn1o'
+      );
     });
   });
 });
