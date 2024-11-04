@@ -13,9 +13,9 @@ export function createRecipe<const DefaultConditions extends Conditions>({
   initialCondition?: Extract<keyof DefaultConditions, string>;
 }) {
   return <
-    const V extends VariantGroup,
-    const RV extends VariantGroup,
-    const C extends Conditions | undefined
+    const V extends VariantGroup = {},
+    const RV extends VariantGroup = {},
+    const C extends Conditions = DefaultConditions
   >(
     options: Args<V, RV, C>,
     debugId?: string
@@ -153,7 +153,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
       config.compoundVariants.push([theVariants, compoundVariantClassNames]);
     }
 
-    const runtimeFn = createRuntimeFn<V, RV, DefaultConditions, C>(config);
+    const runtimeFn = createRuntimeFn<V, RV, C>(config);
 
     return addFunctionSerializer(runtimeFn, {
       importPath: 'responsive-recipes',

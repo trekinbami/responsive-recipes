@@ -25,41 +25,41 @@ type CompoundVariants<V, RV> = {
 export type Args<
   Variants extends VariantGroup,
   ResponsiveVariants extends VariantGroup,
-  C extends Conditions | undefined
+  C extends Conditions
 > = {
   base?: RecipeStyleRule;
   variants?: Variants;
   responsiveVariants?: ResponsiveVariants;
-  conditions?: C;
   defaultVariants?: DefaultVariants<Variants, ResponsiveVariants>;
   compoundVariants?: CompoundVariants<Variants, ResponsiveVariants>;
-} & (keyof C extends never
-  ? { initialCondition?: never }
-  : { initialCondition: Extract<keyof C, string> });
+} & (
+  | {
+      conditions: C;
+      initialCondition: Extract<keyof C, string>;
+    }
+  | {
+      initialCondition?: never;
+      conditions?: never;
+    }
+);
 
 type BooleanMap<T> = T extends 'true' | 'false' ? boolean : T;
 
-type CreateVariants<Variants> = keyof Variants extends never
-  ? {}
-  : { -readonly [K in keyof Variants]?: BooleanMap<keyof Variants[K]> };
+type CreateVariants<Variants> = {
+  -readonly [K in keyof Variants]?: BooleanMap<keyof Variants[K]>;
+};
 
-type CreateResponsiveVariants<ResponsiveVariants, Conditions> =
-  keyof ResponsiveVariants extends never
-    ? {}
-    : {
-        -readonly [K in keyof ResponsiveVariants]?:
-          | BooleanMap<keyof ResponsiveVariants[K]>
-          | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
-      };
+type CreateResponsiveVariants<ResponsiveVariants, Conditions> = {
+  -readonly [K in keyof ResponsiveVariants]?:
+    | BooleanMap<keyof ResponsiveVariants[K]>
+    | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
+};
 
 export type RuntimeRecipeOptions<
   V extends VariantGroup,
   RV extends VariantGroup,
-  DefaultConditions extends Conditions,
-  C extends Conditions | undefined
-> = Prettify<
-  CreateVariants<V> & CreateResponsiveVariants<RV, keyof C extends never ? DefaultConditions : C>
->;
+  C extends Conditions
+> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C>>;
 
 export type BuildResult = {
   baseClassName: string;

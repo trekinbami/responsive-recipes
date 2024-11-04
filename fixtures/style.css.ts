@@ -1,33 +1,34 @@
-import { createRecipe } from '../src/lib/buildtimeFn';
+import { GetVariants } from "../dist";
+import { createRecipe } from "../src/lib/buildtimeFn";
 
 const recipe = createRecipe({
   defaultConditions: {
-    sm: { '@media': '(min-width: 375px)' },
-    xl: { '@media': '(min-with: 1280px)' },
+    sm: { "@media": "(min-width: 375px)" },
+    xl: { "@media": "(min-with: 1280px)" },
   },
-  initialCondition: 'sm',
+  initialCondition: "sm",
 });
 
 export const stack = recipe({
   conditions: {
     initial: {},
-    md: { '@media': '(min-width: 768px)' },
-    lg: { '@media': '(min-width: 1024px)' },
+    md: { "@media": "(min-width: 768px)" },
+    lg: { "@media": "(min-width: 1024px)" },
   },
-  initialCondition: 'initial',
+  initialCondition: "initial",
   base: {
-    flex: '1',
-    display: 'flex',
+    flex: "1",
+    display: "flex",
   },
   variants: {
     size: {
       small: {
-        width: '100px',
-        height: '100px',
+        width: "100px",
+        height: "100px",
       },
       large: {
-        width: '400px',
-        height: '400px',
+        width: "400px",
+        height: "400px",
       },
     },
     spacing: {
@@ -45,21 +46,21 @@ export const stack = recipe({
   },
   responsiveVariants: {
     backgroundColor: {
-      green: { backgroundColor: 'green' },
-      blue: { backgroundColor: 'blue' },
-      red: { backgroundColor: 'red' },
+      green: { backgroundColor: "green" },
+      blue: { backgroundColor: "blue" },
+      red: { backgroundColor: "red" },
     },
     gap: {
-      1: { gap: '4px' },
-      2: { gap: '8px' },
-      3: { gap: '12px' },
+      1: { gap: "4px" },
+      2: { gap: "8px" },
+      3: { gap: "12px" },
     },
     direction: {
       row: {
-        flexDirection: 'row',
+        flexDirection: "row",
       },
       column: {
-        flexDirection: 'column',
+        flexDirection: "column",
       },
     },
     isFullHeight: {
@@ -71,15 +72,15 @@ export const stack = recipe({
     {
       variants: {
         isDesktop: true,
-        spacing: 'compact',
+        spacing: "compact",
       },
       style: {
-        padding: '20px',
+        padding: "20px",
       },
     },
     {
       variants: {
-        spacing: 'normal',
+        spacing: "normal",
         amountOfCols: 0,
       },
       style: {
@@ -88,15 +89,15 @@ export const stack = recipe({
     },
     {
       variants: {
-        size: 'small',
-        backgroundColor: 'blue',
+        size: "small",
+        backgroundColor: "blue",
       },
-      style: { border: '20px solid yellow' },
+      style: { border: "20px solid yellow" },
     },
     {
       variants: {
-        size: 'small',
-        backgroundColor: 'red',
+        size: "small",
+        backgroundColor: "red",
       },
       style: {
         border: 0,
@@ -104,8 +105,8 @@ export const stack = recipe({
     },
     {
       variants: {
-        size: 'small',
-        spacing: 'compact',
+        size: "small",
+        spacing: "compact",
       },
       style: {
         flexBasis: 123,
@@ -114,42 +115,42 @@ export const stack = recipe({
     {
       variants: {
         isDesktop: false,
-        spacing: 'compact',
+        spacing: "compact",
       },
       style: {
-        padding: '100px',
+        padding: "100px",
       },
     },
     {
       variants: {
-        spacing: 'normal',
+        spacing: "normal",
         amountOfCols: 12,
       },
-      style: { width: '1111px' },
+      style: { width: "1111px" },
     },
     {
       variants: {
-        direction: 'row',
-        backgroundColor: 'green',
+        direction: "row",
+        backgroundColor: "green",
       },
-      style: { display: 'block' },
+      style: { display: "block" },
     },
     {
       variants: {
         isFullHeight: false,
-        size: 'small',
+        size: "small",
       },
       style: {
-        display: 'grid',
+        display: "grid",
       },
     },
     {
       variants: {
         gap: 1,
-        spacing: 'normal',
+        spacing: "normal",
       },
       style: {
-        gridTemplateColumns: 'repeat(12, 1fr)',
+        gridTemplateColumns: "repeat(12, 1fr)",
       },
     },
   ],
@@ -157,22 +158,22 @@ export const stack = recipe({
 
 export const heading = recipe({
   base: {
-    fontFamily: 'fantasy',
+    fontFamily: "fantasy",
   },
   responsiveVariants: {
     size: {
-      small: { fontSize: '12px' },
-      large: { fontSize: '24px' },
+      small: { fontSize: "12px" },
+      large: { fontSize: "24px" },
     },
   },
   variants: {
     color: {
-      red: { color: 'red' },
-      blue: { color: 'blue' },
+      red: { color: "red" },
+      blue: { color: "blue" },
     },
   },
   defaultVariants: {
-    size: 'large',
-    color: 'red',
+    size: "large",
+    color: "red",
   },
 });

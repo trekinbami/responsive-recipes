@@ -10,10 +10,9 @@ import { isPrimitive, isStringOrNumber } from './utils';
 export function createRuntimeFn<
   V extends VariantGroup,
   RV extends VariantGroup,
-  D extends Conditions,
-  C extends Conditions | undefined
+  C extends Conditions
 >(buildResult: BuildResult) {
-  const runtimeFn = (options?: RuntimeRecipeOptions<V, RV, D, C>) => {
+  const runtimeFn = (options?: RuntimeRecipeOptions<V, RV, C>) => {
     const {
       variantClassNames,
       compoundVariants,
