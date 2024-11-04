@@ -1,4 +1,3 @@
-import { GetVariants } from "../dist";
 import { createRecipe } from "../src/lib/buildtimeFn";
 
 const recipe = createRecipe({
