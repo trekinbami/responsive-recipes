@@ -7,7 +7,7 @@ import { preventComposition } from './utils';
 
 export function createRecipe<const DefaultConditions extends Conditions>({
   defaultConditions,
-  initialCondition,
+  initialCondition
 }: {
   defaultConditions: DefaultConditions;
   initialCondition?: Extract<keyof DefaultConditions, string>;
@@ -26,7 +26,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
       responsiveVariants = {},
       conditions = defaultConditions,
       compoundVariants = [],
-      defaultVariants = {},
+      defaultVariants = {}
     } = options;
 
     // This config will hold all the classNames that the runtimeFn will use to select
@@ -37,7 +37,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
       variantClassNames: {},
       compoundVariants: [],
       defaultVariants,
-      baseClassName: '',
+      baseClassName: ''
     };
 
     // First we generate a basic className for the base styles
@@ -62,7 +62,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
             debugId
               ? `${debugId}_${variantGroup}_${variantOption}`
               : `${variantGroup}_${variantOption}`
-          ),
+          )
         };
       }
     }
@@ -92,8 +92,8 @@ export function createRecipe<const DefaultConditions extends Conditions>({
             ...group,
             [variantOption]: {
               ...option,
-              [conditionName]: className,
-            },
+              [conditionName]: className
+            }
           };
         }
       }
@@ -158,7 +158,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
     return addFunctionSerializer(runtimeFn, {
       importPath: 'responsive-recipes',
       importName: 'createRuntimeFn',
-      args: [config],
+      args: [config]
     });
   };
 }

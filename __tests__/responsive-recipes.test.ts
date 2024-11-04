@@ -58,7 +58,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when multiple responsive variants are passed', () => {
       const result = stack({
         backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
-        gap: { initial: 1, md: 2, lg: 3 },
+        gap: { initial: 1, md: 2, lg: 3 }
       });
       expect(result).toBe(
         'style__1rdq1cn0 style_initial_backgroundColor_green__1rdq1cn9 style_md_backgroundColor_blue__1rdq1cnk style_lg_backgroundColor_green__1rdq1cnt style_initial_gap_1__1rdq1cnc style_md_gap_2__1rdq1cnn style_lg_gap_3__1rdq1cny'
@@ -68,7 +68,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when regular and responsive variants are passed', () => {
       const result = stack({
         size: 'small',
-        backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
+        backgroundColor: { initial: 'green', md: 'blue', lg: 'green' }
       });
 
       expect(result).toBe(
@@ -79,7 +79,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when responsive variants are passed with a primitive and conditions', () => {
       const result = stack({
         backgroundColor: 'green',
-        gap: { initial: 1, md: 2, lg: 3 },
+        gap: { initial: 1, md: 2, lg: 3 }
       });
 
       expect(result).toBe(
@@ -114,7 +114,7 @@ describe('runtime recipes', () => {
       it('multiple responsive variants', () => {
         const result = stack({
           direction: { initial: 'column', md: 'row' },
-          backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
+          backgroundColor: { initial: 'green', md: 'blue', lg: 'green' }
         });
 
         expect(result).toBe(
@@ -125,7 +125,7 @@ describe('runtime recipes', () => {
       it('a responsive string variant', () => {
         const result = stack({
           size: 'small',
-          backgroundColor: { initial: 'green', md: 'blue' },
+          backgroundColor: { initial: 'green', md: 'blue' }
         });
 
         expect(result).toBe(
@@ -136,7 +136,7 @@ describe('runtime recipes', () => {
       it('a responsive boolean variant', () => {
         const result = stack({
           size: 'small',
-          isFullHeight: false,
+          isFullHeight: false
         });
 
         expect(result).toBe(
@@ -147,7 +147,7 @@ describe('runtime recipes', () => {
       it('a responsive number variant', () => {
         const result = stack({
           spacing: 'normal',
-          gap: 1,
+          gap: 1
         });
 
         expect(result).toBe(
@@ -159,7 +159,7 @@ describe('runtime recipes', () => {
         const result = stack({
           size: 'small',
           direction: { initial: 'column', md: 'row' },
-          backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
+          backgroundColor: { initial: 'green', md: 'blue', lg: 'green' }
         });
 
         expect(result).toBe(

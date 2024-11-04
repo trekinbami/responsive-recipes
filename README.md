@@ -21,9 +21,9 @@ const recipe = createRecipe({
   defaultConditions: {
     initial: {},
     sm: { '@media': '(min-width: 380px)' },
-    lg: { '@media': '(min-width: 1024px)' },
+    lg: { '@media': '(min-width: 1024px)' }
   },
-  initialCondition: 'initial',
+  initialCondition: 'initial'
 });
 ```
 
@@ -34,41 +34,41 @@ But `responsive-recipes` also takes in `responsiveVariants`.
 ```ts
 const stack = recipe({
   base: {
-    display: 'flex',
+    display: 'flex'
   },
   variants: {
     isFullHeight: {
       true: {
-        height: '100%',
+        height: '100%'
       },
       false: {
-        height: 'auto',
-      },
-    },
+        height: 'auto'
+      }
+    }
   },
   responsiveVariants: {
     direction: {
       row: {
-        flexDirection: 'row',
+        flexDirection: 'row'
       },
       column: {
-        flexDirection: 'column',
-      },
-    },
+        flexDirection: 'column'
+      }
+    }
   },
   compoundVariants: {
     variants: {
       direction: 'row',
-      isFullHeight: true,
+      isFullHeight: true
     },
     style: {
-      backgroundColor: 'green',
-    },
+      backgroundColor: 'green'
+    }
   },
   defaultVariants: {
     isFullHeight: false,
-    direction: 'row',
-  },
+    direction: 'row'
+  }
 });
 ```
 
@@ -79,7 +79,7 @@ In runtime, you can use this function to generate classNames
 ```ts
 const className = stack({
   isFullHeight: true,
-  direction: { initial: 'column', lg: 'row' },
+  direction: { initial: 'column', lg: 'row' }
 });
 ```
 
@@ -105,45 +105,45 @@ const stack = recipe({
   conditions: {
     initial: {},
     md: { '@media': '(min-width: 768px)' },
-    xl: { '@media': '(min-width: 1280px)' },
+    xl: { '@media': '(min-width: 1280px)' }
   },
   initialCondition: 'initial',
   base: {
-    display: 'flex',
+    display: 'flex'
   },
   variants: {
     isFullHeight: {
       true: {
-        height: '100%',
+        height: '100%'
       },
       false: {
-        height: 'auto',
-      },
-    },
+        height: 'auto'
+      }
+    }
   },
   responsiveVariants: {
     direction: {
       row: {
-        flexDirection: 'row',
+        flexDirection: 'row'
       },
       column: {
-        flexDirection: 'column',
-      },
-    },
+        flexDirection: 'column'
+      }
+    }
   },
   compoundVariants: {
     variants: {
       direction: 'row',
-      isFullHeight: true,
+      isFullHeight: true
     },
     style: {
-      backgroundColor: 'green',
-    },
+      backgroundColor: 'green'
+    }
   },
   defaultVariants: {
     isFullHeight: false,
-    direction: 'row',
-  },
+    direction: 'row'
+  }
 });
 ```
 
@@ -158,7 +158,7 @@ A compound variant is a variant that kicks in when a combination of variants and
 ```ts
 const className = stack({
   isFullHeight: true,
-  direction: { initial: 'column', lg: 'row' },
+  direction: { initial: 'column', lg: 'row' }
 });
 ```
 

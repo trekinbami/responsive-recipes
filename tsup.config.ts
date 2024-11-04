@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   entry: ['./index.ts', './src/lib/buildtimeFn.ts', './src/lib/createRuntimeFn.ts'],
   sourcemap: true,
-  splitting: false,
+  splitting: false
 });
