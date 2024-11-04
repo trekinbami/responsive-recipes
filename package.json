@@ -22,6 +22,7 @@
     "@changesets/cli": "^2.27.1",
     "@vanilla-extract/css": "^1.14.2",
     "@vanilla-extract/vite-plugin": "^4.0.7",
+    "prettier": "^3.3.3",
     "tsup": "^8.0.2",
     "typescript": "^5.4.3",
     "vitest": "^1.4.0"
