@@ -5,6 +5,6 @@ import path from 'path';
 export default defineConfig({
   plugins: [vanillaExtractPlugin()],
   resolve: {
-    alias: [{ find: 'responsive-recipes', replacement: path.resolve(__dirname, './') }],
-  },
+    alias: [{ find: 'responsive-recipes', replacement: path.resolve(__dirname, './') }]
+  }
 });
