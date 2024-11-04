@@ -28,5 +28,6 @@
   },
   "peerDependencies": {
     "@vanilla-extract/css": "^1.14.2"
-  }
+  },
+  "packageManager": "pnpm@9.4.0"
 }
