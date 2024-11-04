@@ -17,7 +17,8 @@
     "release": "pnpm run build && changeset publish",
     "lint": "tsc",
     "test": "vitest",
-    "prettier:check": "prettier . --check"
+    "prettier:check": "prettier . --check",
+    "prettier:write": "prettier . --write"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
