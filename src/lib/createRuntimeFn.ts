@@ -3,7 +3,7 @@ import {
   Conditions,
   RuntimeRecipeOptions,
   RuntimeVariantGroup,
-  VariantGroup,
+  VariantGroup
 } from './types';
 import { isPrimitive, isStringOrNumber } from './utils';
 
@@ -19,7 +19,7 @@ export function createRuntimeFn<
       baseClassName,
       initialCondition,
       responsiveVariantClassNames,
-      defaultVariants,
+      defaultVariants
     } = buildResult;
 
     const selection = options ? { ...defaultVariants, ...options } : defaultVariants;
@@ -104,7 +104,7 @@ export function createRuntimeFn<
           let optionValue = undefined;
           let addedVariantOptionWithConditions = {
             [initialCondition]: undefined,
-            ...variantOption,
+            ...variantOption
           };
 
           for (const condition of orderedConditions) {
