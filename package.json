@@ -16,7 +16,8 @@
     "build": "tsup",
     "release": "pnpm run build && changeset publish",
     "lint": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "prettier:check": "prettier . --check"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
