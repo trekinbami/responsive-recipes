@@ -152,13 +152,17 @@ export function createRuntimeFn<
   function getVariantDefinitions(options: Record<string, Record<string, unknown>>) {
     type VariantDefinitions = {
       [index: string]: {
-        values: (string | number)[];
-        defaultValue?: string | number | boolean | undefined;
+        values: string[];
+        defaultValue?: string;
       };
     };
 
     return Object.entries(options).reduce<VariantDefinitions>((acc, [key, value]) => {
-      acc[key] = { values: Object.keys(value), defaultValue: buildResult.defaultVariants[key] };
+      // Note: Should we parse these values here?
+      acc[key] = {
+        values: Object.keys(value),
+        defaultValue: buildResult.defaultVariants[key]?.toString()
+      };
       return acc;
     }, {});
   }
