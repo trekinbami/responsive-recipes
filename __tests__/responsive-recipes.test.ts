@@ -19,6 +19,19 @@ describe('runtime recipes', () => {
         'style__1rdq1cn0 style_size_small__1rdq1cn1 style_isDesktop_true__1rdq1cn5'
       );
     });
+
+    it('should return the regular variants when using the variantDefinitions variants getter', () => {
+      expect(stack.variantDefinitions.variants).toEqual({
+        size: { values: ['small', 'large'], defaultValue: undefined },
+        spacing: { values: ['compact', 'normal'], defaultValue: undefined },
+        isDesktop: { values: ['true', 'false'], defaultValue: undefined },
+        amountOfCols: { values: ['0', '12'], defaultValue: undefined }
+      });
+
+      expect(heading.variantDefinitions.variants).toEqual({
+        color: { values: ['red', 'blue'], defaultValue: 'red' }
+      });
+    });
   });
 
   describe('with responsive variants', () => {
@@ -85,6 +98,31 @@ describe('runtime recipes', () => {
       expect(result).toBe(
         'style__1rdq1cn0 style_initial_backgroundColor_green__1rdq1cn9 style_initial_gap_1__1rdq1cnc style_md_gap_2__1rdq1cnn style_lg_gap_3__1rdq1cny'
       );
+    });
+
+    it('should return the correct responsive variants when using the variantDefinitions responsiveVariants getter', () => {
+      expect(stack.variantDefinitions.responsiveVariants).toEqual({
+        backgroundColor: {
+          values: ['green', 'blue', 'red'],
+          defaultValue: undefined
+        },
+        gap: { values: ['1', '2', '3'], defaultValue: undefined },
+        direction: {
+          values: ['row', 'column'],
+          defaultValue: undefined
+        },
+        isFullHeight: {
+          values: ['true', 'false'],
+          defaultValue: undefined
+        }
+      });
+
+      expect(heading.variantDefinitions.responsiveVariants).toEqual({
+        size: {
+          values: ['small', 'large'],
+          defaultValue: 'large'
+        }
+      });
     });
   });
 
@@ -189,5 +227,10 @@ describe('runtime recipes', () => {
         'style__1rdq1cn1n style_sm_size_large__1rdq1cn1r style_xl_size_small__1rdq1cn1s style_color_red__1rdq1cn1o'
       );
     });
+  });
+
+  it('should return a base class when using the className getter', () => {
+    expect(stack.classNames.base).toBe('style__1rdq1cn0');
+    expect(heading.classNames.base).toBe('style__1rdq1cn1n');
   });
 });

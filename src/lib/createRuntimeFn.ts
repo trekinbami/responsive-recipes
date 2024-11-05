@@ -143,5 +143,43 @@ export function createRuntimeFn<
     return className.join(' ');
   };
 
+  runtimeFn.classNames = {
+    get base() {
+      return buildResult.baseClassName;
+    }
+  };
+
+  function getVariantDefinitions(options: Record<string, Record<string, unknown>>) {
+    type VariantDefinitions = {
+      [index: string]: {
+        values: string[];
+        defaultValue?: string;
+      };
+    };
+
+    return Object.entries(options).reduce<VariantDefinitions>((acc, [key, value]) => {
+      // Note: Should we parse these values here?
+      acc[key] = {
+        values: Object.keys(value),
+        defaultValue: buildResult.defaultVariants[key]?.toString()
+      };
+      return acc;
+    }, {});
+  }
+
+  runtimeFn.variantDefinitions = {
+    get variants() {
+      return getVariantDefinitions(buildResult.variantClassNames);
+    },
+
+    get responsiveVariants() {
+      return getVariantDefinitions(buildResult.responsiveVariantClassNames);
+    },
+
+    get defaultVariants() {
+      return buildResult.defaultVariants;
+    }
+  };
+
   return runtimeFn;
 }

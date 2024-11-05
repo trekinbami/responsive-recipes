@@ -33,11 +33,11 @@ export function createRecipe<const DefaultConditions extends Conditions>({
     const config: BuildResult = {
       initialCondition: (options.initialCondition ?? initialCondition) || 'initial',
       conditions,
-      responsiveVariantClassNames: {},
+      baseClassName: '',
       variantClassNames: {},
+      responsiveVariantClassNames: {},
       compoundVariants: [],
-      defaultVariants,
-      baseClassName: ''
+      defaultVariants
     };
 
     // First we generate a basic className for the base styles
