@@ -18,3 +18,12 @@ export function isStringOrNumber(obj: unknown): obj is string | number {
 export function isPrimitive(value: unknown): value is string | number | boolean {
   return value !== Object(value);
 }
+
+/**
+ *
+ * @param v A string in the format of `var(--varName)`
+ * @returns The varName
+ */
+export function extractValueFromVar(v: string) {
+  return v.replace(/^var\(|\)$/g, '');
+}
