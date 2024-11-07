@@ -1,4 +1,4 @@
-import type { ComplexStyleRule } from '@vanilla-extract/css';
+import type { CSSProperties, ComplexStyleRule } from '@vanilla-extract/css';
 
 type Prettify<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
@@ -6,6 +6,10 @@ export type RecipeStyleRule = ComplexStyleRule | string;
 
 // { isResponsive: { true: StyleRule, false: StyleRule } }
 export type VariantGroup = Record<string, Record<string | number, RecipeStyleRule>> | undefined;
+export type InlineVariantGroup = Record<
+  string,
+  { property: keyof CSSProperties; isResponsive?: boolean }
+>;
 
 type ConditionKey = '@media' | '@supports' | '@container' | 'selector';
 
@@ -25,6 +29,7 @@ type CompoundVariants<V, RV> = {
 export type Args<
   Variants extends VariantGroup,
   ResponsiveVariants extends VariantGroup,
+  InlineVariants extends InlineVariantGroup,
   C extends Conditions
 > = {
   base?: RecipeStyleRule;
@@ -32,6 +37,7 @@ export type Args<
   responsiveVariants?: ResponsiveVariants;
   defaultVariants?: DefaultVariants<Variants, ResponsiveVariants>;
   compoundVariants?: CompoundVariants<Variants, ResponsiveVariants>;
+  inlineVariants?: InlineVariants;
 } & (
   | {
       conditions: C;
@@ -55,11 +61,16 @@ type CreateResponsiveVariants<ResponsiveVariants, Conditions> = {
     | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
 };
 
+type CreateInlineVariants<InlineVariants, Conditions> = {
+  -readonly [K in keyof InlineVariants]?: string | { -readonly [Key in keyof Conditions]?: string };
+};
+
 export type RuntimeRecipeOptions<
   V extends VariantGroup,
   RV extends VariantGroup,
+  IV extends InlineVariantGroup,
   C extends Conditions
-> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C>>;
+> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C>> & CreateInlineVariants<IV, C>;
 
 export type BuildResult = {
   baseClassName: string;
@@ -68,6 +79,9 @@ export type BuildResult = {
   };
   responsiveVariantClassNames: {
     [variantGroup: string]: { [variantOption: string]: { [breakpoint: string]: string } };
+  };
+  inlineVariantData: {
+    [variantGroup: string]: { className: string; style: { [breakpoint: string]: string } };
   };
   compoundVariants: [{ [variantGroup: string]: string }, { [conditionName: string]: string }][];
   conditions: Conditions;
