@@ -127,7 +127,8 @@ export function createRecipe<const DefaultConditions extends Conditions>({
         // Per breakpoint a clean var name in the buildresult
         customProperties[bp] = cleanVarName;
 
-        if (!('@media' in conditionValue)) {
+        const mq = conditionValue['@media'];
+        if (!mq) {
           rule = {
             ...rule,
             [cssProperty]: customProperty
@@ -136,9 +137,6 @@ export function createRecipe<const DefaultConditions extends Conditions>({
 
           continue;
         }
-
-        const mq = conditionValue['@media'];
-        if (!mq) continue;
 
         rule = {
           ...rule,
