@@ -1,4 +1,4 @@
-import type { ComplexStyleRule } from '@vanilla-extract/css';
+import type { CSSProperties, ComplexStyleRule } from '@vanilla-extract/css';
 
 type Prettify<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
@@ -6,6 +6,10 @@ export type RecipeStyleRule = ComplexStyleRule | string;
 
 // { isResponsive: { true: StyleRule, false: StyleRule } }
 export type VariantGroup = Record<string, Record<string | number, RecipeStyleRule>> | undefined;
+export type InlineVariantGroup = Record<
+  string,
+  { property: keyof CSSProperties; isResponsive?: boolean }
+>;
 
 type ConditionKey = '@media' | '@supports' | '@container' | 'selector';
 
@@ -13,25 +17,33 @@ export type Conditions = {
   [conditionName: string]: { [key in ConditionKey]?: string };
 };
 
-type CombineVariants<V, RV> = Prettify<CreateVariants<V> & CreateVariants<RV>>;
+type InlineVariants<IV> = { [K in keyof IV]?: string };
 
-type DefaultVariants<V, RV> = keyof RV | keyof V extends never ? never : CombineVariants<V, RV>;
+type CombineVariants<V, RV, IV> = Prettify<
+  CreateVariants<V> & CreateVariants<RV> & InlineVariants<IV>
+>;
 
-type CompoundVariants<V, RV> = {
-  variants: keyof V | keyof RV extends never ? never : CombineVariants<V, RV>;
+type DefaultVariants<V, RV, IV> = keyof RV | keyof V | keyof IV extends never
+  ? never
+  : CombineVariants<V, RV, IV>;
+
+type CompoundVariants<V, RV, IV> = {
+  variants: keyof V | keyof RV | keyof IV extends never ? never : CombineVariants<V, RV, IV>;
   style: RecipeStyleRule;
 }[];
 
 export type Args<
   Variants extends VariantGroup,
   ResponsiveVariants extends VariantGroup,
+  InlineVariants extends InlineVariantGroup,
   C extends Conditions
 > = {
   base?: RecipeStyleRule;
   variants?: Variants;
   responsiveVariants?: ResponsiveVariants;
-  defaultVariants?: DefaultVariants<Variants, ResponsiveVariants>;
-  compoundVariants?: CompoundVariants<Variants, ResponsiveVariants>;
+  defaultVariants?: DefaultVariants<Variants, ResponsiveVariants, InlineVariants>;
+  compoundVariants?: CompoundVariants<Variants, ResponsiveVariants, InlineVariants>;
+  inlineVariants?: InlineVariants;
 } & (
   | {
       conditions: C;
@@ -55,11 +67,16 @@ type CreateResponsiveVariants<ResponsiveVariants, Conditions> = {
     | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
 };
 
+type CreateInlineVariants<InlineVariants, Conditions> = {
+  -readonly [K in keyof InlineVariants]?: string | { -readonly [Key in keyof Conditions]?: string };
+};
+
 export type RuntimeRecipeOptions<
   V extends VariantGroup,
   RV extends VariantGroup,
+  IV extends InlineVariantGroup,
   C extends Conditions
-> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C>>;
+> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C> & CreateInlineVariants<IV, C>>;
 
 export type BuildResult = {
   baseClassName: string;
@@ -68,6 +85,9 @@ export type BuildResult = {
   };
   responsiveVariantClassNames: {
     [variantGroup: string]: { [variantOption: string]: { [breakpoint: string]: string } };
+  };
+  inlineVariantData: {
+    [variantGroup: string]: { className: string; style: { [breakpoint: string]: string } };
   };
   compoundVariants: [{ [variantGroup: string]: string }, { [conditionName: string]: string }][];
   conditions: Conditions;

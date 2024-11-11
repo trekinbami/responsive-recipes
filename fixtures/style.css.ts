@@ -67,6 +67,10 @@ export const stack = recipe({
       false: {}
     }
   },
+  inlineVariants: {
+    height: { property: 'height' },
+    width: { property: 'width' }
+  },
   compoundVariants: [
     {
       variants: {
@@ -171,8 +175,13 @@ export const heading = recipe({
       blue: { color: 'blue' }
     }
   },
+  inlineVariants: {
+    width: { property: 'width' },
+    height: { property: 'height' }
+  },
   defaultVariants: {
     size: 'large',
-    color: 'red'
+    color: 'red',
+    width: '10px'
   }
 });

@@ -1,6 +1,7 @@
 import {
   BuildResult,
   Conditions,
+  InlineVariantGroup,
   RuntimeRecipeOptions,
   RuntimeVariantGroup,
   VariantGroup
@@ -10,16 +11,18 @@ import { isPrimitive, isStringOrNumber } from './utils';
 export function createRuntimeFn<
   V extends VariantGroup,
   RV extends VariantGroup,
+  IV extends InlineVariantGroup,
   C extends Conditions
 >(buildResult: BuildResult) {
-  const runtimeFn = (options?: RuntimeRecipeOptions<V, RV, C>) => {
+  const runtimeFn = (options?: RuntimeRecipeOptions<V, RV, IV, C>) => {
     const {
       variantClassNames,
       compoundVariants,
       baseClassName,
       initialCondition,
       responsiveVariantClassNames,
-      defaultVariants
+      defaultVariants,
+      inlineVariantData
     } = buildResult;
 
     const selection = options ? { ...defaultVariants, ...options } : defaultVariants;
@@ -29,6 +32,7 @@ export function createRuntimeFn<
      * Base classname
      */
     const className = [baseClassName];
+    let styleProps: Record<string, string> = {};
 
     /**
      * Regular Variants and Responsive Variants
@@ -69,6 +73,36 @@ export function createRuntimeFn<
 
         className.push(variantClassNameGroup[responsiveVariantOption]?.[condition] || '');
       }
+    }
+
+    /**
+     * Inline variants
+     * Check if we have inline variants that need to be applied and get classNames for each variant defined in the options. Also get the appropriate breakpoints from the style in the buildresult that are defined in the options
+     */
+
+    const inlineVariantOptions = Object.entries(inlineVariantData).filter(
+      ([variantGroup]) => variantGroup in selection
+    );
+
+    for (const [variantGroup, variantData] of inlineVariantOptions) {
+      const selectionVariantOption = selection[variantGroup] as RuntimeVariantGroup;
+
+      const inlineVariantClassName = variantData.className;
+      className.push(inlineVariantClassName);
+
+      if (isPrimitive(selectionVariantOption)) {
+        const initialStyleProperty = variantData.style[initialCondition];
+        if (!initialStyleProperty) continue;
+        styleProps = { ...styleProps, [initialStyleProperty]: selectionVariantOption.toString() };
+        continue;
+      }
+
+      // Filer the style for the breakpoints that are defined in the options and merge them with the styleProps
+      const style = Object.entries(variantData.style)
+        .filter(([bp]) => bp in selectionVariantOption)
+        .map(([bp, styleProperty]) => [styleProperty, selectionVariantOption[bp]]);
+
+      styleProps = { ...styleProps, ...Object.fromEntries(style) };
     }
 
     /**
@@ -140,7 +174,7 @@ export function createRuntimeFn<
       }
     }
 
-    return className.join(' ');
+    return { className: className.join(' '), style: styleProps };
   };
 
   runtimeFn.classNames = {
