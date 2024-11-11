@@ -213,22 +213,22 @@ describe('runtime recipes', () => {
     it('should return the default variant for variants when no variant is passed', () => {
       const result = heading();
       expect(result.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_red__1rdq1cn1w'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_red__1rdq1cn1w style__inline_width__1rdq1cn24'
       );
 
       const result1 = heading({ color: 'blue' });
       expect(result1.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_blue__1rdq1cn1x'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn24'
       );
 
       const result2 = heading({ size: { sm: 'large', xl: 'small' } });
       expect(result2.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_xl_size_small__1rdq1cn20 style_color_red__1rdq1cn1w'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_xl_size_small__1rdq1cn20 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn24'
       );
 
       const result3 = heading({ size: { sm: 'large', xl: 'small' }, color: undefined });
       expect(result3.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_xl_size_small__1rdq1cn20 style_color_red__1rdq1cn1w'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_xl_size_small__1rdq1cn20 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn24'
       );
     });
   });
@@ -243,8 +243,29 @@ describe('runtime recipes', () => {
       });
 
       expect(result.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_red__1rdq1cn1w style_width_100__1rdq1cn1y style_height_100__1rdq1cn1x'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn24 style__inline_height__1rdq1cn27'
       );
+    });
+
+    it('should return the correct style object when inline variants are used', () => {
+      const result = stack({
+        backgroundColor: 'blue',
+        height: '100px'
+      });
+
+      expect(result.style).toEqual({
+        '--height-initial__1rdq1cn13': '100px'
+      });
+
+      const result1 = stack({
+        backgroundColor: 'blue',
+        height: { initial: '100px', md: '200px' }
+      });
+
+      expect(result1.style).toEqual({
+        '--height-initial__1rdq1cn13': '100px',
+        '--height-md__1rdq1cn14': '200px'
+      });
     });
   });
 
