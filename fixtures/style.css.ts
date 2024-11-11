@@ -181,6 +181,7 @@ export const heading = recipe({
   },
   defaultVariants: {
     size: 'large',
-    color: 'red'
+    color: 'red',
+    width: '10px'
   }
 });

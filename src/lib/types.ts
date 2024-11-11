@@ -17,12 +17,18 @@ export type Conditions = {
   [conditionName: string]: { [key in ConditionKey]?: string };
 };
 
+type InlineVariants<IV> = { [K in keyof IV]?: string };
+
 type CombineVariants<V, RV> = Prettify<CreateVariants<V> & CreateVariants<RV>>;
 
-type DefaultVariants<V, RV> = keyof RV | keyof V extends never ? never : CombineVariants<V, RV>;
+type DefaultVariants<V, RV, IV> = keyof RV | keyof V extends never
+  ? never
+  : CombineVariants<V, RV> & InlineVariants<IV>;
 
-type CompoundVariants<V, RV> = {
-  variants: keyof V | keyof RV extends never ? never : CombineVariants<V, RV>;
+type CompoundVariants<V, RV, IV> = {
+  variants: keyof V | keyof RV | keyof IV extends never
+    ? never
+    : CombineVariants<V, RV> & InlineVariants<IV>;
   style: RecipeStyleRule;
 }[];
 
@@ -35,8 +41,8 @@ export type Args<
   base?: RecipeStyleRule;
   variants?: Variants;
   responsiveVariants?: ResponsiveVariants;
-  defaultVariants?: DefaultVariants<Variants, ResponsiveVariants>;
-  compoundVariants?: CompoundVariants<Variants, ResponsiveVariants>;
+  defaultVariants?: DefaultVariants<Variants, ResponsiveVariants, InlineVariants>;
+  compoundVariants?: CompoundVariants<Variants, ResponsiveVariants, InlineVariants>;
   inlineVariants?: InlineVariants;
 } & (
   | {

@@ -102,9 +102,8 @@ export function createRecipe<const DefaultConditions extends Conditions>({
       }
     }
 
-    // Inline variants only need a single className for each variant. They will use inlined custom properties as values. These inlines custom properties will be set like: style={{'--width-mobile': '100px'; '--width-desktop': '200px';}}. So we need to generate a single className that will use the custom properties as values for each breakpoint. That means that we
+    // Inline variants only need a single className for each variant. They will use inlined custom properties as values. These inlines custom properties will be set like: style={{'--width-mobile': '100px'; '--width-desktop': '200px';}}. So we need to generate a single className that will use the custom properties as values for each breakpoint
 
-    // let variantGroup: keyof typeof inlineVariants;
     for (const variantGroup in inlineVariants) {
       // Create a custom property with Vanilla-Extract's createVar function for each breakpoint
       const customProperties = {} as Record<string, string>;
@@ -147,7 +146,7 @@ export function createRecipe<const DefaultConditions extends Conditions>({
             ...rule['@media'],
             [mq]: {
               // When a custom property is missing, we want it to fall back to the previous breakpoint.
-              // But custom properties inherit the current scope. So when a certain custom var/breakpoint is missing , it will inherit it from the previous scope.
+              // But custom properties inherit. So when a certain custom var/breakpoint is missing , it will inherit it from the previous scope.
               // To prevent this, we reset the custom property in the current scope with the fallback values we already have in place.
               [cleanVarName]: fallbackVar(customProperty, ...fallbacks),
               [cssProperty]: fallbackVar(customProperty, ...fallbacks)
