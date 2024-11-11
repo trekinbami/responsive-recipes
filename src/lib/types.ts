@@ -19,16 +19,16 @@ export type Conditions = {
 
 type InlineVariants<IV> = { [K in keyof IV]?: string };
 
-type CombineVariants<V, RV> = Prettify<CreateVariants<V> & CreateVariants<RV>>;
+type CombineVariants<V, RV, IV> = Prettify<
+  CreateVariants<V> & CreateVariants<RV> & InlineVariants<IV>
+>;
 
-type DefaultVariants<V, RV, IV> = keyof RV | keyof V extends never
+type DefaultVariants<V, RV, IV> = keyof RV | keyof V | keyof IV extends never
   ? never
-  : CombineVariants<V, RV> & InlineVariants<IV>;
+  : CombineVariants<V, RV, IV>;
 
 type CompoundVariants<V, RV, IV> = {
-  variants: keyof V | keyof RV | keyof IV extends never
-    ? never
-    : CombineVariants<V, RV> & InlineVariants<IV>;
+  variants: keyof V | keyof RV | keyof IV extends never ? never : CombineVariants<V, RV, IV>;
   style: RecipeStyleRule;
 }[];
 
@@ -76,7 +76,7 @@ export type RuntimeRecipeOptions<
   RV extends VariantGroup,
   IV extends InlineVariantGroup,
   C extends Conditions
-> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C>> & CreateInlineVariants<IV, C>;
+> = Prettify<CreateVariants<V> & CreateResponsiveVariants<RV, C> & CreateInlineVariants<IV, C>>;
 
 export type BuildResult = {
   baseClassName: string;
