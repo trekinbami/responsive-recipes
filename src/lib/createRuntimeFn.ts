@@ -183,22 +183,24 @@ export function createRuntimeFn<
     }
   };
 
-  function getVariantDefinitions(options: Record<string, Record<string, unknown>>) {
-    type VariantDefinitions = {
-      [index: string]: {
-        values: string[];
-        defaultValue?: string;
-      };
+  type VariantDefinitions = {
+    [index: string]: {
+      values: string[];
+      defaultValue?: string;
     };
+  };
+  type Options = Record<string, Record<string, unknown>>;
 
-    return Object.entries(options).reduce<VariantDefinitions>((acc, [key, value]) => {
-      // Note: Should we parse these values here?
-      acc[key] = {
-        values: Object.keys(value),
+  function getVariantDefinitions(options: Options) {
+    const result: VariantDefinitions = {};
+    for (const key in options) {
+      result[key] = {
+        values: Object.keys(options[key] ?? {}),
         defaultValue: buildResult.defaultVariants[key]?.toString()
       };
-      return acc;
-    }, {});
+    }
+
+    return result;
   }
 
   runtimeFn.variantDefinitions = {
@@ -208,6 +210,15 @@ export function createRuntimeFn<
 
     get responsiveVariants() {
       return getVariantDefinitions(buildResult.responsiveVariantClassNames);
+    },
+
+    get inlineVariants() {
+      const options: Options = {};
+      for (const key in buildResult.inlineVariantData) {
+        options[key] = {};
+      }
+
+      return getVariantDefinitions(options);
     },
 
     get defaultVariants() {

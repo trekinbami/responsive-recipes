@@ -267,6 +267,18 @@ describe('runtime recipes', () => {
         '--height-md__1rdq1cn14': '200px'
       });
     });
+
+    it('should return the inline variants when using the variantDefinitions variants getter', () => {
+      expect(stack.variantDefinitions.inlineVariants).toEqual({
+        width: { values: [], defaultValue: undefined },
+        height: { values: [], defaultValue: undefined }
+      });
+
+      expect(heading.variantDefinitions.inlineVariants).toEqual({
+        width: { values: [], defaultValue: '10px' },
+        height: { values: [], defaultValue: undefined }
+      });
+    });
   });
 
   it('should return a base class when using the className getter', () => {
