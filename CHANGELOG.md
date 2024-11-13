@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.1.1
+
+### Patch Changes
+
+- c3aacc1: Add documentation for inline variants
+
 ## 0.1.0
 
 ### Minor Changes
