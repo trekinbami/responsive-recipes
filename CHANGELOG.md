@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.1.2
+
+### Patch Changes
+
+- 3c3d945: Bump dependencies
+
 ## 0.1.1
 
 ### Patch Changes
