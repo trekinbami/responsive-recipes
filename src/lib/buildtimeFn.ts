@@ -1,5 +1,5 @@
 import { addFunctionSerializer } from '@vanilla-extract/css/functionSerializer';
-import { ComplexStyleRule, createVar, fallbackVar, style, StyleRule } from '@vanilla-extract/css';
+import { ComplexStyleRule, createVar, fallbackVar, style } from '@vanilla-extract/css';
 import { createRuntimeFn } from './createRuntimeFn';
 
 import type { Args, BuildResult, Conditions } from './types';
