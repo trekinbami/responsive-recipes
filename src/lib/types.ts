@@ -6,10 +6,9 @@ export type RecipeStyleRule = ComplexStyleRule | string;
 
 // { isResponsive: { true: StyleRule, false: StyleRule } }
 export type VariantGroup = Record<string, Record<string | number, RecipeStyleRule>> | undefined;
-export type InlineVariantGroup = Record<
-  string,
-  { property: keyof CSSProperties; isResponsive?: boolean }
->;
+export type InlineVariantGroup =
+  | Record<string, { property: keyof CSSProperties; isResponsive?: boolean }>
+  | undefined;
 
 type ConditionKey = '@media' | '@supports' | '@container' | 'selector';
 
@@ -17,7 +16,7 @@ export type Conditions = {
   [conditionName: string]: { [key in ConditionKey]?: string };
 };
 
-type InlineVariants<IV> = { [K in keyof IV]?: string };
+type InlineVariants<IV> = keyof IV extends never ? {} : { [K in keyof IV]?: string };
 
 type CombineVariants<V, RV, IV> = Prettify<
   CreateVariants<V> & CreateVariants<RV> & InlineVariants<IV>
@@ -57,19 +56,28 @@ export type Args<
 
 type BooleanMap<T> = T extends 'true' | 'false' ? boolean : T;
 
-type CreateVariants<Variants> = {
-  -readonly [K in keyof Variants]?: BooleanMap<keyof Variants[K]>;
-};
+type CreateVariants<Variants> = keyof Variants extends never
+  ? {}
+  : {
+      -readonly [K in keyof Variants]?: BooleanMap<keyof Variants[K]>;
+    };
 
-type CreateResponsiveVariants<ResponsiveVariants, Conditions> = {
-  -readonly [K in keyof ResponsiveVariants]?:
-    | BooleanMap<keyof ResponsiveVariants[K]>
-    | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
-};
+type CreateResponsiveVariants<ResponsiveVariants, Conditions> =
+  keyof ResponsiveVariants extends never
+    ? {}
+    : {
+        -readonly [K in keyof ResponsiveVariants]?:
+          | BooleanMap<keyof ResponsiveVariants[K]>
+          | { -readonly [Key in keyof Conditions]?: BooleanMap<keyof ResponsiveVariants[K]> };
+      };
 
-type CreateInlineVariants<InlineVariants, Conditions> = {
-  -readonly [K in keyof InlineVariants]?: string | { -readonly [Key in keyof Conditions]?: string };
-};
+type CreateInlineVariants<InlineVariants, Conditions> = keyof InlineVariants extends never
+  ? {}
+  : {
+      -readonly [K in keyof InlineVariants]?:
+        | string
+        | { -readonly [Key in keyof Conditions]?: string };
+    };
 
 export type RuntimeRecipeOptions<
   V extends VariantGroup,

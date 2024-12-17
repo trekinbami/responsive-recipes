@@ -13,9 +13,9 @@ export function createRecipe<const DefaultConditions extends Conditions>({
   initialCondition?: Extract<keyof DefaultConditions, string>;
 }) {
   return <
-    const V extends VariantGroup = {},
-    const RV extends VariantGroup = {},
-    const IV extends InlineVariantGroup = {},
+    const V extends VariantGroup,
+    const RV extends VariantGroup,
+    const IV extends InlineVariantGroup,
     const C extends Conditions = DefaultConditions
   >(
     options: Args<V, RV, IV, C>,
