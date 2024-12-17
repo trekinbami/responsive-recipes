@@ -1,19 +1,7 @@
-import {
-  BuildResult,
-  Conditions,
-  InlineVariantGroup,
-  RuntimeRecipeOptions,
-  RuntimeVariantGroup,
-  VariantGroup
-} from './types';
+import { BuildResult, Conditions, RuntimeRecipeOptions, RuntimeVariantGroup } from './types';
 import { isPrimitive, isStringOrNumber } from './utils';
 
-export function createRuntimeFn<
-  V extends VariantGroup,
-  RV extends VariantGroup,
-  IV extends InlineVariantGroup,
-  C extends Conditions
->(buildResult: BuildResult) {
+export function createRuntimeFn<V, RV, IV, C extends Conditions>(buildResult: BuildResult) {
   const runtimeFn = (options?: RuntimeRecipeOptions<V, RV, IV, C>) => {
     const {
       variantClassNames,

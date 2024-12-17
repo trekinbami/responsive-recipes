@@ -1,30 +1,25 @@
 import { addFunctionSerializer } from '@vanilla-extract/css/functionSerializer';
-import { ComplexStyleRule, createVar, fallbackVar, style } from '@vanilla-extract/css';
+import { ComplexStyleRule, createVar, fallbackVar, style, StyleRule } from '@vanilla-extract/css';
 import { createRuntimeFn } from './createRuntimeFn';
 
-import type { Args, BuildResult, Conditions, InlineVariantGroup, VariantGroup } from './types';
+import type { Args, BuildResult, Conditions } from './types';
 import { extractValueFromVar, preventComposition } from './utils';
 
-export function createRecipe<const DefaultConditions extends Conditions>({
+export function createRecipe<DefaultConditions extends Conditions>({
   defaultConditions,
   initialCondition
 }: {
   defaultConditions: DefaultConditions;
   initialCondition?: Extract<keyof DefaultConditions, string>;
 }) {
-  return <
-    const V extends VariantGroup,
-    const RV extends VariantGroup,
-    const IV extends InlineVariantGroup,
-    const C extends Conditions = DefaultConditions
-  >(
+  return <V, RV, IV, C extends Conditions = DefaultConditions>(
     options: Args<V, RV, IV, C>,
     debugId?: string
   ) => {
     const {
       base = {},
-      variants = {},
-      responsiveVariants = {},
+      variants,
+      responsiveVariants,
       inlineVariants,
       conditions = defaultConditions,
       compoundVariants = [],
@@ -187,8 +182,8 @@ export function createRecipe<const DefaultConditions extends Conditions>({
         .join('_');
 
       // If all variants in the compound are a regular variant, we only need to generate an initialCondition className
-      const allRegularVariants = Object.keys(theVariants).every((variantGroup) =>
-        Object.keys(variants).includes(variantGroup)
+      const allRegularVariants = Object.keys(theVariants).every(
+        (variantGroup) => variants && Object.keys(variants).includes(variantGroup)
       );
 
       if (allRegularVariants) {
