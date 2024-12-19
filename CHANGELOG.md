@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.1.3
+
+### Patch Changes
+
+- 2a75995: Improve autocompletion on CSS properties
+
 ## 0.1.2
 
 ### Patch Changes
