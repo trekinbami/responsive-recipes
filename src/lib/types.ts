@@ -1,8 +1,10 @@
-import type { ComplexStyleRule } from '@vanilla-extract/css';
+import type { ComplexStyleRule, CSSProperties } from '@vanilla-extract/css';
 
 type Prettify<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
 type ConditionKey = '@media' | '@supports' | '@container' | 'selector';
+
+type AutoCompletedCSSProperties = keyof CSSProperties | (string & {});
 
 export type Conditions = {
   [conditionName: string]: { [key in ConditionKey]?: string };
@@ -53,7 +55,7 @@ export type Args<V, RV, IV, C extends Conditions> = {
   responsiveVariants?: InferredVariant<RV>;
   defaultVariants?: DefaultVariants<V, RV, IV>;
   compoundVariants?: CompoundVariants<V, RV, IV>;
-  inlineVariants?: { [K in keyof IV]: { property: string } };
+  inlineVariants?: { [K in keyof IV]: { property: AutoCompletedCSSProperties } };
 } & (
   | {
       conditions: C;
