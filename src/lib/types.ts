@@ -7,7 +7,7 @@ type ConditionKey = '@media' | '@supports' | '@container' | 'selector';
 type AutoCompletedCSSProperties = keyof CSSProperties | (string & {});
 
 export type Conditions = {
-  [conditionName: string]: { [key in ConditionKey]?: AutoCompletedCSSProperties };
+  [conditionName: string]: { [key in ConditionKey]?: string };
 };
 
 type CombineVariants<V, RV, IV> = Prettify<
@@ -33,10 +33,6 @@ type ValueMap<T> = T extends 'true' | 'false'
     ? N
     : T;
 
-type A = 'sam' | 'ber';
-type B = { name: A | (string & {}) };
-const b: B = { name: 'toet' };
-
 type CreateVariants<Variants> = {
   [K in keyof Variants]?: ValueMap<keyof Variants[K]>;
 };
@@ -59,7 +55,7 @@ export type Args<V, RV, IV, C extends Conditions> = {
   responsiveVariants?: InferredVariant<RV>;
   defaultVariants?: DefaultVariants<V, RV, IV>;
   compoundVariants?: CompoundVariants<V, RV, IV>;
-  inlineVariants?: { [K in keyof IV]: { property: keyof CSSProperties | (string & {}) } };
+  inlineVariants?: { [K in keyof IV]: { property: AutoCompletedCSSProperties } };
 } & (
   | {
       conditions: C;
