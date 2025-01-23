@@ -1,5 +1,11 @@
 # responsive-recipes
 
+## 0.1.4
+
+### Patch Changes
+
+- 1b0b12b: Autocomplete CSS properties for inline variant properties
+
 ## 0.1.3
 
 ### Patch Changes
