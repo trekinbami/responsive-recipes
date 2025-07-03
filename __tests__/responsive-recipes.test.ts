@@ -13,6 +13,12 @@ describe('runtime recipes', () => {
       expect(stack({ size: 'small' }).className).toBe('style__1rdq1cn0 style_size_small__1rdq1cn1');
     });
 
+    it('should return the correct class for a regular variant that has a zero as a variant key', () => {
+      expect(heading({ margin: '0' }).className).toBe(
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_red__1rdq1cn1w style_margin_0__1rdq1cn21 style__inline_width__1rdq1cn2b'
+      );
+    });
+
     it('should return multiple correct classes for multiple regular variants', () => {
       const result = stack({ size: 'small', isDesktop: true });
       expect(result.className).toBe(
@@ -31,7 +37,7 @@ describe('runtime recipes', () => {
       expect(heading.variantDefinitions.variants).toEqual({
         color: { values: ['red', 'blue'], defaultValue: 'red' },
         zIndex: { values: ['1', '2', '3'], defaultValue: undefined },
-        margin: { values: ['1', '2', '3'], defaultValue: undefined }
+        margin: { values: ['0', '1', '2', '3'], defaultValue: undefined }
       });
     });
   });
@@ -215,22 +221,22 @@ describe('runtime recipes', () => {
     it('should return the default variant for variants when no variant is passed', () => {
       const result = heading();
       expect(result.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn25 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2a'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2b'
       );
 
       const result1 = heading({ color: 'blue' });
       expect(result1.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn25 style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn2a'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn2b'
       );
 
       const result2 = heading({ size: { sm: 'large', xl: 'small' } });
       expect(result2.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn25 style_xl_size_small__1rdq1cn26 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2a'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_xl_size_small__1rdq1cn27 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2b'
       );
 
       const result3 = heading({ size: { sm: 'large', xl: 'small' }, color: undefined });
       expect(result3.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn25 style_xl_size_small__1rdq1cn26 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2a'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_xl_size_small__1rdq1cn27 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2b'
       );
     });
   });
@@ -245,7 +251,7 @@ describe('runtime recipes', () => {
       });
 
       expect(result.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn25 style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn2a style__inline_height__1rdq1cn2d'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn2b style__inline_height__1rdq1cn2e'
       );
     });
 

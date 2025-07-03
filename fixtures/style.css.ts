@@ -180,6 +180,7 @@ export const heading = recipe({
       '3': { zIndex: 3 }
     },
     margin: {
+      0: { margin: 0 },
       1: { margin: '10px' },
       2: { margin: '20px' },
       3: { margin: '30px' }
