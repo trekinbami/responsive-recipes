@@ -84,7 +84,7 @@ export const stack = recipe({
     {
       variants: {
         spacing: 'normal',
-        amountOfCols: 0
+        amountOfCols: '0'
       },
       style: {
         flexBasis: 100
@@ -127,7 +127,7 @@ export const stack = recipe({
     {
       variants: {
         spacing: 'normal',
-        amountOfCols: 12
+        amountOfCols: '12'
       },
       style: { width: '1111px' }
     },
@@ -149,7 +149,7 @@ export const stack = recipe({
     },
     {
       variants: {
-        gap: 1,
+        gap: '1',
         spacing: 'normal'
       },
       style: {
@@ -173,6 +173,16 @@ export const heading = recipe({
     color: {
       red: { color: 'red' },
       blue: { color: 'blue' }
+    },
+    zIndex: {
+      '1': { zIndex: 1 },
+      '2': { zIndex: 2 },
+      '3': { zIndex: 3 }
+    },
+    margin: {
+      1: { margin: '10px' },
+      2: { margin: '20px' },
+      3: { margin: '30px' }
     }
   },
   inlineVariants: {

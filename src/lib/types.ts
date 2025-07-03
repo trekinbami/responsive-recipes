@@ -27,11 +27,7 @@ type InferredVariant<T> = {
   [K in keyof T]: { [Key in keyof T[K]]: RecipeStyleRule };
 };
 
-type ValueMap<T> = T extends 'true' | 'false'
-  ? boolean
-  : T extends `${infer N extends number}`
-    ? N
-    : T;
+type ValueMap<T> = T extends 'true' | 'false' ? boolean : T;
 
 type CreateVariants<Variants> = {
   [K in keyof Variants]?: ValueMap<keyof Variants[K]>;
