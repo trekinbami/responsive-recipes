@@ -13,7 +13,12 @@ export function createRuntimeFn<V, RV, IV, C extends Conditions>(buildResult: Bu
       inlineVariantData
     } = buildResult;
 
-    const selection = options ? { ...defaultVariants, ...options } : defaultVariants;
+    // Remove all undefined values from the options
+    const filteredOptions = Object.fromEntries(
+      Object.entries(options ?? {}).filter(([, value]) => value !== undefined)
+    ) as Exclude<typeof options, undefined>;
+
+    const selection = { ...defaultVariants, ...filteredOptions };
     const allVariantClassNames = { ...variantClassNames, ...responsiveVariantClassNames };
 
     /**
@@ -74,7 +79,6 @@ export function createRuntimeFn<V, RV, IV, C extends Conditions>(buildResult: Bu
 
     for (const [variantGroup, variantData] of inlineVariantOptions) {
       const selectionVariantOption = selection[variantGroup] as RuntimeVariantGroup;
-
       const inlineVariantClassName = variantData.className;
       className.push(inlineVariantClassName);
 

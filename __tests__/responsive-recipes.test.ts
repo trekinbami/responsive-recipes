@@ -268,6 +268,17 @@ describe('runtime recipes', () => {
       });
     });
 
+    it('should return the correct style object and not error when a variant is passed that is not defined', () => {
+      const result = stack({
+        width: '200px',
+        height: undefined
+      });
+
+      expect(result.style).toEqual({
+        '--width-initial__1rdq1cn17': '200px'
+      });
+    });
+
     it('should return the inline variants when using the variantDefinitions variants getter', () => {
       expect(stack.variantDefinitions.inlineVariants).toEqual({
         width: { values: [], defaultValue: undefined },

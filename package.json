@@ -17,6 +17,7 @@
     "release": "pnpm run build && changeset publish",
     "lint": "tsc",
     "test": "vitest",
+    "test:debug": "vitest --reporter=basic",
     "prettier:check": "prettier . --check",
     "prettier:write": "prettier . --write"
   },
