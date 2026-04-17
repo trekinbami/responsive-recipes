@@ -23,8 +23,12 @@ type CompoundVariants<V, RV, IV> = {
   style: RecipeStyleRule;
 }[];
 
-type InferredVariant<T> = {
-  [K in keyof T]: { [Key in keyof T[K]]: RecipeStyleRule };
+export type VariantRecord = Record<string, Record<string, RecipeStyleRule>>;
+
+type AssertStringVariantKeys<T> = {
+  [K in keyof T]: keyof T[K] extends string
+    ? T[K]
+    : "Error: variant keys must be quoted strings. Use { '0': ... } instead of { 0: ... }";
 };
 
 type ValueMap<T> = T extends 'true' | 'false' ? boolean : T;
@@ -45,10 +49,10 @@ type CreateInlineVariants<InlineVariants, Conditions> = {
 
 export type RecipeStyleRule = ComplexStyleRule | string;
 
-export type Args<V, RV, IV, C extends Conditions> = {
+export type Args<V extends VariantRecord, RV extends VariantRecord, IV, C extends Conditions> = {
   base?: RecipeStyleRule;
-  variants?: InferredVariant<V>;
-  responsiveVariants?: InferredVariant<RV>;
+  variants?: V & AssertStringVariantKeys<V>;
+  responsiveVariants?: RV & AssertStringVariantKeys<RV>;
   defaultVariants?: DefaultVariants<V, RV, IV>;
   compoundVariants?: CompoundVariants<V, RV, IV>;
   inlineVariants?: { [K in keyof IV]: { property: AutoCompletedCSSProperties } };

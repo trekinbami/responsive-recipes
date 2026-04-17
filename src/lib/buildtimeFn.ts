@@ -2,7 +2,7 @@ import { addFunctionSerializer } from '@vanilla-extract/css/functionSerializer';
 import { ComplexStyleRule, createVar, fallbackVar, style } from '@vanilla-extract/css';
 import { createRuntimeFn } from './createRuntimeFn';
 
-import type { Args, BuildResult, Conditions } from './types';
+import type { Args, BuildResult, Conditions, VariantRecord } from './types';
 import { extractValueFromVar, preventComposition } from './utils';
 
 export function createRecipe<DefaultConditions extends Conditions>({
@@ -12,7 +12,7 @@ export function createRecipe<DefaultConditions extends Conditions>({
   defaultConditions: DefaultConditions;
   initialCondition?: Extract<keyof DefaultConditions, string>;
 }) {
-  return <V, RV, IV, C extends Conditions = DefaultConditions>(
+  return <V extends VariantRecord, RV extends VariantRecord, IV, C extends Conditions = DefaultConditions>(
     options: Args<V, RV, IV, C>,
     debugId?: string
   ) => {

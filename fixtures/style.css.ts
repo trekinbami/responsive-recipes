@@ -39,8 +39,8 @@ export const stack = recipe({
       false: {}
     },
     amountOfCols: {
-      0: {},
-      12: {}
+      '0': {},
+      '12': {}
     }
   },
   responsiveVariants: {
@@ -50,9 +50,9 @@ export const stack = recipe({
       red: { backgroundColor: 'red' }
     },
     gap: {
-      1: { gap: '4px' },
-      2: { gap: '8px' },
-      3: { gap: '12px' }
+      '1': { gap: '4px' },
+      '2': { gap: '8px' },
+      '3': { gap: '12px' }
     },
     direction: {
       row: {
@@ -180,10 +180,10 @@ export const heading = recipe({
       '3': { zIndex: 3 }
     },
     margin: {
-      0: { margin: 0 },
-      1: { margin: '10px' },
-      2: { margin: '20px' },
-      3: { margin: '30px' }
+      '0': { margin: 0 },
+      '1': { margin: '10px' },
+      '2': { margin: '20px' },
+      '3': { margin: '30px' }
     }
   },
   inlineVariants: {
