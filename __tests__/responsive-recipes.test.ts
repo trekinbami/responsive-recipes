@@ -13,6 +13,12 @@ describe('runtime recipes', () => {
       expect(stack({ size: 'small' }).className).toBe('style__1rdq1cn0 style_size_small__1rdq1cn1');
     });
 
+    it('should return the correct class for a regular variant that has a zero as a variant key', () => {
+      expect(heading({ margin: '0' }).className).toBe(
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_red__1rdq1cn1w style_margin_0__1rdq1cn21 style__inline_width__1rdq1cn2b'
+      );
+    });
+
     it('should return multiple correct classes for multiple regular variants', () => {
       const result = stack({ size: 'small', isDesktop: true });
       expect(result.className).toBe(
@@ -29,7 +35,9 @@ describe('runtime recipes', () => {
       });
 
       expect(heading.variantDefinitions.variants).toEqual({
-        color: { values: ['red', 'blue'], defaultValue: 'red' }
+        color: { values: ['red', 'blue'], defaultValue: 'red' },
+        zIndex: { values: ['1', '2', '3'], defaultValue: undefined },
+        margin: { values: ['0', '1', '2', '3'], defaultValue: undefined }
       });
     });
   });
@@ -43,7 +51,7 @@ describe('runtime recipes', () => {
     });
 
     it('should return the correct class for a responsive variant that is called with a number', () => {
-      const result = stack({ gap: 1 });
+      const result = stack({ gap: '1' });
       expect(result.className).toBe('style__1rdq1cn0 style_initial_gap_1__1rdq1cnc');
     });
 
@@ -75,7 +83,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when multiple responsive variants are passed', () => {
       const result = stack({
         backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
-        gap: { initial: 1, md: 2, lg: 3 }
+        gap: { initial: '1', md: '2', lg: '3' }
       });
       expect(result.className).toBe(
         'style__1rdq1cn0 style_initial_backgroundColor_green__1rdq1cn9 style_md_backgroundColor_blue__1rdq1cnk style_lg_backgroundColor_green__1rdq1cnt style_initial_gap_1__1rdq1cnc style_md_gap_2__1rdq1cnn style_lg_gap_3__1rdq1cny'
@@ -96,7 +104,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when responsive variants are passed with a primitive and conditions', () => {
       const result = stack({
         backgroundColor: 'green',
-        gap: { initial: 1, md: 2, lg: 3 }
+        gap: { initial: '1', md: '2', lg: '3' }
       });
 
       expect(result.className).toBe(
@@ -147,7 +155,7 @@ describe('runtime recipes', () => {
       });
 
       it('a regular number variant', () => {
-        const result = stack({ spacing: 'normal', amountOfCols: 12 });
+        const result = stack({ spacing: 'normal', amountOfCols: '12' });
         expect(result.className).toBe(
           'style__1rdq1cn0 style_spacing_normal__1rdq1cn4 style_amountOfCols_12__1rdq1cn8 style__compound_spacing_normal_amountOfCols_12__1rdq1cn1l'
         );
@@ -189,7 +197,7 @@ describe('runtime recipes', () => {
       it('a responsive number variant', () => {
         const result = stack({
           spacing: 'normal',
-          gap: 1
+          gap: '1'
         });
 
         expect(result.className).toBe(
@@ -213,22 +221,22 @@ describe('runtime recipes', () => {
     it('should return the default variant for variants when no variant is passed', () => {
       const result = heading();
       expect(result.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_red__1rdq1cn1w style__inline_width__1rdq1cn24'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2b'
       );
 
       const result1 = heading({ color: 'blue' });
       expect(result1.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn24'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn2b'
       );
 
       const result2 = heading({ size: { sm: 'large', xl: 'small' } });
       expect(result2.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_xl_size_small__1rdq1cn20 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn24'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_xl_size_small__1rdq1cn27 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2b'
       );
 
       const result3 = heading({ size: { sm: 'large', xl: 'small' }, color: undefined });
       expect(result3.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_xl_size_small__1rdq1cn20 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn24'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_xl_size_small__1rdq1cn27 style_color_red__1rdq1cn1w style__inline_width__1rdq1cn2b'
       );
     });
   });
@@ -243,7 +251,7 @@ describe('runtime recipes', () => {
       });
 
       expect(result.className).toBe(
-        'style__1rdq1cn1v style_sm_size_large__1rdq1cn1z style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn24 style__inline_height__1rdq1cn27'
+        'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_blue__1rdq1cn1x style__inline_width__1rdq1cn2b style__inline_height__1rdq1cn2e'
       );
     });
 
@@ -265,6 +273,17 @@ describe('runtime recipes', () => {
       expect(result1.style).toEqual({
         '--height-initial__1rdq1cn13': '100px',
         '--height-md__1rdq1cn14': '200px'
+      });
+    });
+
+    it('should return the correct style object and not error when a variant is passed that is not defined', () => {
+      const result = stack({
+        width: '200px',
+        height: undefined
+      });
+
+      expect(result.style).toEqual({
+        '--width-initial__1rdq1cn17': '200px'
       });
     });
 

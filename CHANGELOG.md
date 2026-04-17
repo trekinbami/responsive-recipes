@@ -1,5 +1,14 @@
 # responsive-recipes
 
+## 0.1.5
+
+### Patch Changes
+
+- This release will:
+
+  - Force variant values to be strings. `{ gap: { 0: { gap: 0 } }` is not allowed anymore. Has to be `{ gap: { '0': { gap: 0 } }`
+  - Fix an issue where passing `undefined` in runtime to an inlineVariant would cause an error
+
 ## 0.1.4
 
 ### Patch Changes

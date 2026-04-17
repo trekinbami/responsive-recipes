@@ -2,7 +2,7 @@ import { addFunctionSerializer } from '@vanilla-extract/css/functionSerializer';
 import { ComplexStyleRule, createVar, fallbackVar, style } from '@vanilla-extract/css';
 import { createRuntimeFn } from './createRuntimeFn';
 
-import type { Args, BuildResult, Conditions } from './types';
+import type { Args, BuildResult, Conditions, VariantRecord } from './types';
 import { extractValueFromVar, preventComposition } from './utils';
 
 export function createRecipe<DefaultConditions extends Conditions>({
@@ -12,7 +12,12 @@ export function createRecipe<DefaultConditions extends Conditions>({
   defaultConditions: DefaultConditions;
   initialCondition?: Extract<keyof DefaultConditions, string>;
 }) {
-  return <V, RV, IV, C extends Conditions = DefaultConditions>(
+  return <
+    V extends VariantRecord,
+    RV extends VariantRecord,
+    IV,
+    C extends Conditions = DefaultConditions
+  >(
     options: Args<V, RV, IV, C>,
     debugId?: string
   ) => {
@@ -98,7 +103,6 @@ export function createRecipe<DefaultConditions extends Conditions>({
     }
 
     // Inline variants only need a single className for each variant. They will use inlined custom properties as values. These inlines custom properties will be set like: style={{'--width-mobile': '100px'; '--width-desktop': '200px';}}. So we need to generate a single className that will use the custom properties as values for each breakpoint
-
     for (const variantGroup in inlineVariants) {
       // Create a custom property with Vanilla-Extract's createVar function for each breakpoint
       const customProperties = {} as Record<string, string>;
