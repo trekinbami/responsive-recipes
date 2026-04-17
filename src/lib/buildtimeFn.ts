@@ -12,7 +12,12 @@ export function createRecipe<DefaultConditions extends Conditions>({
   defaultConditions: DefaultConditions;
   initialCondition?: Extract<keyof DefaultConditions, string>;
 }) {
-  return <V extends VariantRecord, RV extends VariantRecord, IV, C extends Conditions = DefaultConditions>(
+  return <
+    V extends VariantRecord,
+    RV extends VariantRecord,
+    IV,
+    C extends Conditions = DefaultConditions
+  >(
     options: Args<V, RV, IV, C>,
     debugId?: string
   ) => {
