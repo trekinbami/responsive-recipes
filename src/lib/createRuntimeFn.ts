@@ -57,10 +57,7 @@ export function createRuntimeFn<V, RV, IV, C extends Conditions>(buildResult: Bu
           responsiveVariantOption = responsiveVariantOption === true ? 'true' : 'false';
         }
 
-        /*
-         * Variant keys are always strings (JS object keys), so coerce the number
-         * 0 to '0' before the falsy check below would otherwise skip it.
-         */
+        // Prevent 0 from being skipped because its falsy
         if (responsiveVariantOption === 0) {
           responsiveVariantOption = '0';
         }

@@ -1,5 +1,7 @@
 import { expect, describe, it } from 'vitest';
 import { stack, heading } from '../fixtures/style.css';
+import { box } from '../fixtures/falsy.css';
+import { numericKeyedBox } from '../fixtures/numeric-keys.css';
 
 describe('runtime recipes', () => {
   describe('without config', () => {
@@ -14,7 +16,7 @@ describe('runtime recipes', () => {
     });
 
     it('should return the correct class for a regular variant that has a zero as a variant key', () => {
-      expect(heading({ margin: '0' }).className).toBe(
+      expect(heading({ margin: 0 }).className).toBe(
         'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_red__1rdq1cn1w style_margin_0__1rdq1cn21 style__inline_width__1rdq1cn2b'
       );
     });
@@ -51,7 +53,7 @@ describe('runtime recipes', () => {
     });
 
     it('should return the correct class for a responsive variant that is called with a number', () => {
-      const result = stack({ gap: '1' });
+      const result = stack({ gap: 1 });
       expect(result.className).toBe('style__1rdq1cn0 style_initial_gap_1__1rdq1cnc');
     });
 
@@ -83,7 +85,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when multiple responsive variants are passed', () => {
       const result = stack({
         backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
-        gap: { initial: '1', md: '2', lg: '3' }
+        gap: { initial: 1, md: 2, lg: 3 }
       });
       expect(result.className).toBe(
         'style__1rdq1cn0 style_initial_backgroundColor_green__1rdq1cn9 style_md_backgroundColor_blue__1rdq1cnk style_lg_backgroundColor_green__1rdq1cnt style_initial_gap_1__1rdq1cnc style_md_gap_2__1rdq1cnn style_lg_gap_3__1rdq1cny'
@@ -104,7 +106,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when responsive variants are passed with a primitive and conditions', () => {
       const result = stack({
         backgroundColor: 'green',
-        gap: { initial: '1', md: '2', lg: '3' }
+        gap: { initial: 1, md: 2, lg: 3 }
       });
 
       expect(result.className).toBe(
@@ -155,10 +157,21 @@ describe('runtime recipes', () => {
       });
 
       it('a regular number variant', () => {
-        const result = stack({ spacing: 'normal', amountOfCols: '12' });
+        const result = stack({ spacing: 'normal', amountOfCols: 12 });
         expect(result.className).toBe(
           'style__1rdq1cn0 style_spacing_normal__1rdq1cn4 style_amountOfCols_12__1rdq1cn8 style__compound_spacing_normal_amountOfCols_12__1rdq1cn1l'
         );
+      });
+
+      it('a regular number variant with the value 0', () => {
+        const result = stack({ spacing: 'normal', amountOfCols: 0 });
+
+        // Variant class and compound class both emitted; checked
+        // independently because `0` is the JS-falsy value most likely to be
+        // accidentally dropped by either the variant lookup or compound
+        // matching path.
+        expect(result.className).toContain('style_amountOfCols_0');
+        expect(result.className).toContain('style__compound_spacing_normal_amountOfCols_0');
       });
 
       it('multiple responsive variants', () => {
@@ -197,7 +210,7 @@ describe('runtime recipes', () => {
       it('a responsive number variant', () => {
         const result = stack({
           spacing: 'normal',
-          gap: '1'
+          gap: 1
         });
 
         expect(result.className).toBe(
@@ -297,6 +310,55 @@ describe('runtime recipes', () => {
         width: { values: [], defaultValue: '10px' },
         height: { values: [], defaultValue: undefined }
       });
+    });
+  });
+
+  /**
+   * Pins that `0` (JS-falsy) routes through the runtime lookup, alongside
+   * `undefined` as the explicit unset-condition sentinel that stays skipped.
+   */
+  describe('with a responsive variant value that is JS-falsy', () => {
+    it('applies the class when a responsive value is the number 0', () => {
+      const { className } = box({ padding: { initial: 16, md: 0 } });
+      const classes = className.trim().split(/\s+/).filter(Boolean);
+
+      // base + initial '16' + md '0' = 3 classes
+      expect(classes.length).toBe(3);
+      expect(className).toContain('padding_0');
+      expect(className).toContain('md_padding_0');
+    });
+
+    it('still skips a responsive value of undefined', () => {
+      const { className } = box({ padding: { initial: 16, md: undefined } });
+      const classes = className.trim().split(/\s+/).filter(Boolean);
+
+      // base + initial '16' = 2 classes (no md)
+      expect(classes.length).toBe(2);
+      expect(className).not.toContain('md_padding');
+    });
+  });
+
+  /**
+   * Runtime contract for recipes built from variant maps with unquoted
+   * numeric keys. Type-level coverage lives in the fixture
+   * (`fixtures/numeric-keys.css.ts`), which fails `tsc` if the documented
+   * numeric inputs stop type-checking.
+   */
+  describe('with responsive variants from a map of unquoted numeric keys', () => {
+    it('accepts a flat numeric value', () => {
+      const { className } = numericKeyedBox({ padding: 16 });
+      const classes = className.trim().split(/\s+/).filter(Boolean);
+
+      // base + initial padding_16
+      expect(classes.length).toBe(2);
+      expect(className).toContain('padding_16');
+    });
+
+    it('accepts a responsive object with numeric values, including 0', () => {
+      const { className } = numericKeyedBox({ padding: { initial: 4, md: 0 } });
+
+      expect(className).toContain('padding_4');
+      expect(className).toContain('md_padding_0');
     });
   });
 

@@ -25,15 +25,34 @@ type CompoundVariants<V, RV, IV> = {
 
 export type VariantRecord = Record<string, Record<string, RecipeStyleRule>>;
 
-type AssertStringVariantKeys<T> = {
-  [K in keyof T]: keyof T[K] extends string
-    ? T[K]
-    : "Error: variant keys must be quoted strings. Use { '0': ... } instead of { 0: ... }";
+/**
+ * Preserves the literal key set of the consumer's variant map while
+ * constraining each leaf to `RecipeStyleRule`. Applied at the field type
+ * rather than as an `extends VariantRecord` generic constraint on
+ * {@link Args}, because the generic-level form widens the inferred shape
+ * into a `Record<string, ...>` and collapses both the per-key value union
+ * and the responsive object input down to `string | number`.
+ */
+type InferredVariant<T> = {
+  [K in keyof T]: {
+    [Key in keyof T[K]]: RecipeStyleRule;
+  };
 };
 
+/**
+ * Maps an inferred variant key to the canonical call-site input:
+ *   `'true' | 'false'`        ->  `boolean`
+ *   `'0'` (template-numeric)  ->  `0`
+ *   anything else             ->  the literal string itself
+ *
+ * Distributes over key unions, so `'content-start' | '3'` yields
+ * `'content-start' | 3`.
+ */
 type ValueMap<T> = T extends 'true' | 'false'
   ? boolean
-  : T | (T extends `${infer N extends number}` ? N : never);
+  : T extends `${infer N extends number}`
+    ? N
+    : T;
 
 type CreateVariants<Variants> = {
   [K in keyof Variants]?: ValueMap<keyof Variants[K]>;
@@ -51,10 +70,10 @@ type CreateInlineVariants<InlineVariants, Conditions> = {
 
 export type RecipeStyleRule = ComplexStyleRule | string;
 
-export type Args<V extends VariantRecord, RV extends VariantRecord, IV, C extends Conditions> = {
+export type Args<V, RV, IV, C extends Conditions> = {
   base?: RecipeStyleRule;
-  variants?: V & AssertStringVariantKeys<V>;
-  responsiveVariants?: RV & AssertStringVariantKeys<RV>;
+  variants?: InferredVariant<V>;
+  responsiveVariants?: InferredVariant<RV>;
   defaultVariants?: DefaultVariants<V, RV, IV>;
   compoundVariants?: CompoundVariants<V, RV, IV>;
   inlineVariants?: { [K in keyof IV]: { property: AutoCompletedCSSProperties } };

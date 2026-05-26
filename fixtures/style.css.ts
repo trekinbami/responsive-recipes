@@ -84,7 +84,7 @@ export const stack = recipe({
     {
       variants: {
         spacing: 'normal',
-        amountOfCols: '0'
+        amountOfCols: 0
       },
       style: {
         flexBasis: 100
@@ -127,7 +127,7 @@ export const stack = recipe({
     {
       variants: {
         spacing: 'normal',
-        amountOfCols: '12'
+        amountOfCols: 12
       },
       style: { width: '1111px' }
     },
@@ -149,7 +149,7 @@ export const stack = recipe({
     },
     {
       variants: {
-        gap: '1',
+        gap: 1,
         spacing: 'normal'
       },
       style: {
