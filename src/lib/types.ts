@@ -31,7 +31,9 @@ type AssertStringVariantKeys<T> = {
     : "Error: variant keys must be quoted strings. Use { '0': ... } instead of { 0: ... }";
 };
 
-type ValueMap<T> = T extends 'true' | 'false' ? boolean : T;
+type ValueMap<T> = T extends 'true' | 'false'
+  ? boolean
+  : T | (T extends `${infer N extends number}` ? N : never);
 
 type CreateVariants<Variants> = {
   [K in keyof Variants]?: ValueMap<keyof Variants[K]>;
