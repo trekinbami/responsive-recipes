@@ -12,7 +12,7 @@ export function preventComposition(styleRule?: RecipeStyleRule) {
 }
 
 export function isStringOrNumber(obj: unknown): obj is string | number {
-  return !!obj && (typeof obj === 'string' || typeof obj === 'number');
+  return typeof obj === 'string' || typeof obj === 'number';
 }
 
 export function isPrimitive(value: unknown): value is string | number | boolean {

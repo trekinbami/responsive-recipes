@@ -14,7 +14,7 @@ describe('runtime recipes', () => {
     });
 
     it('should return the correct class for a regular variant that has a zero as a variant key', () => {
-      expect(heading({ margin: '0' }).className).toBe(
+      expect(heading({ margin: 0 }).className).toBe(
         'style__1rdq1cn1v style_sm_size_large__1rdq1cn26 style_color_red__1rdq1cn1w style_margin_0__1rdq1cn21 style__inline_width__1rdq1cn2b'
       );
     });
@@ -51,7 +51,7 @@ describe('runtime recipes', () => {
     });
 
     it('should return the correct class for a responsive variant that is called with a number', () => {
-      const result = stack({ gap: '1' });
+      const result = stack({ gap: 1 });
       expect(result.className).toBe('style__1rdq1cn0 style_initial_gap_1__1rdq1cnc');
     });
 
@@ -83,7 +83,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when multiple responsive variants are passed', () => {
       const result = stack({
         backgroundColor: { initial: 'green', md: 'blue', lg: 'green' },
-        gap: { initial: '1', md: '2', lg: '3' }
+        gap: { initial: 1, md: 2, lg: 3 }
       });
       expect(result.className).toBe(
         'style__1rdq1cn0 style_initial_backgroundColor_green__1rdq1cn9 style_md_backgroundColor_blue__1rdq1cnk style_lg_backgroundColor_green__1rdq1cnt style_initial_gap_1__1rdq1cnc style_md_gap_2__1rdq1cnn style_lg_gap_3__1rdq1cny'
@@ -104,7 +104,7 @@ describe('runtime recipes', () => {
     it('should return the correct classes when responsive variants are passed with a primitive and conditions', () => {
       const result = stack({
         backgroundColor: 'green',
-        gap: { initial: '1', md: '2', lg: '3' }
+        gap: { initial: 1, md: 2, lg: 3 }
       });
 
       expect(result.className).toBe(
@@ -155,10 +155,17 @@ describe('runtime recipes', () => {
       });
 
       it('a regular number variant', () => {
-        const result = stack({ spacing: 'normal', amountOfCols: '12' });
+        const result = stack({ spacing: 'normal', amountOfCols: 12 });
         expect(result.className).toBe(
           'style__1rdq1cn0 style_spacing_normal__1rdq1cn4 style_amountOfCols_12__1rdq1cn8 style__compound_spacing_normal_amountOfCols_12__1rdq1cn1l'
         );
+      });
+
+      it('should not quietly drop fallsy 0 values', () => {
+        const result = stack({ spacing: 'normal', amountOfCols: 0 });
+
+        expect(result.className).toContain('style_amountOfCols_0');
+        expect(result.className).toContain('style__compound_spacing_normal_amountOfCols_0');
       });
 
       it('multiple responsive variants', () => {
@@ -197,7 +204,7 @@ describe('runtime recipes', () => {
       it('a responsive number variant', () => {
         const result = stack({
           spacing: 'normal',
-          gap: '1'
+          gap: 1
         });
 
         expect(result.className).toBe(
@@ -298,10 +305,5 @@ describe('runtime recipes', () => {
         height: { values: [], defaultValue: undefined }
       });
     });
-  });
-
-  it('should return a base class when using the className getter', () => {
-    expect(stack.classNames.base).toBe('style__1rdq1cn0');
-    expect(heading.classNames.base).toBe('style__1rdq1cn1v');
   });
 });

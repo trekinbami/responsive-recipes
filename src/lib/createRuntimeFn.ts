@@ -57,6 +57,11 @@ export function createRuntimeFn<V, RV, IV, C extends Conditions>(buildResult: Bu
           responsiveVariantOption = responsiveVariantOption === true ? 'true' : 'false';
         }
 
+        // Prevent 0 from being skipped because its falsy
+        if (responsiveVariantOption === 0) {
+          responsiveVariantOption = '0';
+        }
+
         if (!responsiveVariantOption) continue;
 
         className.push(variantClassNameGroup[responsiveVariantOption]?.[condition] || '');
