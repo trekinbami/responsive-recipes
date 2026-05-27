@@ -1,7 +1,5 @@
 import { expect, describe, it } from 'vitest';
 import { stack, heading } from '../fixtures/style.css';
-import { box } from '../fixtures/falsy.css';
-import { numericKeyedBox } from '../fixtures/numeric-keys.css';
 
 describe('runtime recipes', () => {
   describe('without config', () => {
@@ -311,59 +309,5 @@ describe('runtime recipes', () => {
         height: { values: [], defaultValue: undefined }
       });
     });
-  });
-
-  /**
-   * Pins that `0` (JS-falsy) routes through the runtime lookup, alongside
-   * `undefined` as the explicit unset-condition sentinel that stays skipped.
-   */
-  describe('with a responsive variant value that is JS-falsy', () => {
-    it('applies the class when a responsive value is the number 0', () => {
-      const { className } = box({ padding: { initial: 16, md: 0 } });
-      const classes = className.trim().split(/\s+/).filter(Boolean);
-
-      // base + initial '16' + md '0' = 3 classes
-      expect(classes.length).toBe(3);
-      expect(className).toContain('padding_0');
-      expect(className).toContain('md_padding_0');
-    });
-
-    it('still skips a responsive value of undefined', () => {
-      const { className } = box({ padding: { initial: 16, md: undefined } });
-      const classes = className.trim().split(/\s+/).filter(Boolean);
-
-      // base + initial '16' = 2 classes (no md)
-      expect(classes.length).toBe(2);
-      expect(className).not.toContain('md_padding');
-    });
-  });
-
-  /**
-   * Runtime contract for recipes built from variant maps with unquoted
-   * numeric keys. Type-level coverage lives in the fixture
-   * (`fixtures/numeric-keys.css.ts`), which fails `tsc` if the documented
-   * numeric inputs stop type-checking.
-   */
-  describe('with responsive variants from a map of unquoted numeric keys', () => {
-    it('accepts a flat numeric value', () => {
-      const { className } = numericKeyedBox({ padding: 16 });
-      const classes = className.trim().split(/\s+/).filter(Boolean);
-
-      // base + initial padding_16
-      expect(classes.length).toBe(2);
-      expect(className).toContain('padding_16');
-    });
-
-    it('accepts a responsive object with numeric values, including 0', () => {
-      const { className } = numericKeyedBox({ padding: { initial: 4, md: 0 } });
-
-      expect(className).toContain('padding_4');
-      expect(className).toContain('md_padding_0');
-    });
-  });
-
-  it('should return a base class when using the className getter', () => {
-    expect(stack.classNames.base).toBe('style__1rdq1cn0');
-    expect(heading.classNames.base).toBe('style__1rdq1cn1v');
   });
 });

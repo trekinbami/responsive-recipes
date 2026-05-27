@@ -39,8 +39,8 @@ export const stack = recipe({
       false: {}
     },
     amountOfCols: {
-      '0': {},
-      '12': {}
+      0: {},
+      12: {}
     }
   },
   responsiveVariants: {
