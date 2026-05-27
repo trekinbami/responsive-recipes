@@ -25,29 +25,12 @@ type CompoundVariants<V, RV, IV> = {
 
 export type VariantRecord = Record<string, Record<string, RecipeStyleRule>>;
 
-/**
- * Preserves the literal key set of the consumer's variant map while
- * constraining each leaf to `RecipeStyleRule`. Applied at the field type
- * rather than as an `extends VariantRecord` generic constraint on
- * {@link Args}, because the generic-level form widens the inferred shape
- * into a `Record<string, ...>` and collapses both the per-key value union
- * and the responsive object input down to `string | number`.
- */
 type InferredVariant<T> = {
   [K in keyof T]: {
     [Key in keyof T[K]]: RecipeStyleRule;
   };
 };
 
-/**
- * Maps an inferred variant key to the canonical call-site input:
- *   `'true' | 'false'`        ->  `boolean`
- *   `'0'` (template-numeric)  ->  `0`
- *   anything else             ->  the literal string itself
- *
- * Distributes over key unions, so `'content-start' | '3'` yields
- * `'content-start' | 3`.
- */
 type ValueMap<T> = T extends 'true' | 'false'
   ? boolean
   : T extends `${infer N extends number}`
