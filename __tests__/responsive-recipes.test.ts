@@ -161,13 +161,9 @@ describe('runtime recipes', () => {
         );
       });
 
-      it('a regular number variant with the value 0', () => {
+      it('should not quietly drop fallsy 0 values', () => {
         const result = stack({ spacing: 'normal', amountOfCols: 0 });
 
-        // Variant class and compound class both emitted; checked
-        // independently because `0` is the JS-falsy value most likely to be
-        // accidentally dropped by either the variant lookup or compound
-        // matching path.
         expect(result.className).toContain('style_amountOfCols_0');
         expect(result.className).toContain('style__compound_spacing_normal_amountOfCols_0');
       });
